@@ -23,8 +23,8 @@ public class ConnectionFactory {
 			logger.error("ClassNotFound at ConnectionFactory")
 			e.printStackTrace();
 		}catch(IOException e) {
-			logger.error("")
-			e.printStackTrace("IOException at ConnectionFactory");
+			logger.error("IOException at ConnectionFactory")
+			e.printStackTrace();
 		}
 		
 		URL = (String)properties.get(DB_URL);
