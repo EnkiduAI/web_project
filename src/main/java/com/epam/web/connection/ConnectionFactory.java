@@ -20,9 +20,11 @@ public class ConnectionFactory {
 			driverName = (String)properties.get(DB_DRIVER);
 			Class.forName(driverName);
 		}catch(ClassNotFoundException e) {
+			logger.error("ClassNotFound at ConnectionFactory")
 			e.printStackTrace();
 		}catch(IOException e) {
-			e.printStackTrace();
+			logger.error("")
+			e.printStackTrace("IOException at ConnectionFactory");
 		}
 		
 		URL = (String)properties.get(DB_URL);
