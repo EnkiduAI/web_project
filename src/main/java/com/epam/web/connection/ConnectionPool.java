@@ -30,7 +30,7 @@ public class ConnectionPool {
 			try {
 			ConnectionFactory connectionFactory = new ConnectionFactory();
 			ProxyConnection connection = new ProxyConnection(connectionFactory.createConnection());
-			freeConnections.offer(connection);
+			freeConnections.put(connection);
 			}catch(SQLException e) {
 				logger.error("Problem on create connection", e);
 				e.printStackTrace();;
@@ -62,7 +62,7 @@ public class ConnectionPool {
 	
 	public void releaseConnection(Connection connection) {
 		if (connection != null) {
-			freeConnections.offer(connection);
+			freeConnections.put(connection);
 		}
 	}
 	
