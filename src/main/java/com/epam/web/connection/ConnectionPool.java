@@ -32,7 +32,7 @@ public class ConnectionPool {
 			ProxyConnection connection = new ProxyConnection(connectionFactory.createConnection());
 			freeConnections.offer(connection);
 			}catch(SQLException e) {
-				logger.error("Problem on create connection");
+				logger.error("Problem on create connection", e);
 				e.printStackTrace();;
 			}
 		}
@@ -54,7 +54,7 @@ public class ConnectionPool {
 		try {
 			connection = freeConnections.take();
 		}catch(InterruptedException e) {
-			logger.error("connection take failure");
+			logger.error("connection take failure", e);
 			
 		}
 		return connection;
@@ -71,9 +71,9 @@ public class ConnectionPool {
 			try {
 			freeConnections.take().close();
 			}catch(InterruptedException e) {
-				logger.error("interrupted exception in method killPool");
+				logger.error("interrupted exception in method killPool", e);
 			}catch(SQLException e) {
-				logger.error("SQLException in method killPool");
+				logger.error("SQLException in method killPool", e);
 			}
 		}
 	}
@@ -83,7 +83,7 @@ public class ConnectionPool {
 		try{
 			DriverManager.deregisterDriver(driver);
 		}catch(SQLException e){
-			logger.error("Cannot deregister driver");
+			logger.error("Cannot deregister driver", e);
 		}
 		});
 	}
