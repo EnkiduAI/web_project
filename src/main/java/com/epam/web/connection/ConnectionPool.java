@@ -64,7 +64,11 @@ public class ConnectionPool {
 	
 	public void releaseConnection(Connection connection) {
 		if (connection != null) {
-			freeConnections.offer(connection);
+			try {
+				freeConnections.put(connection);
+			} catch (InterruptedException e) {
+				logger.error("interrupted exception at releaseConnection;");
+			}
 		}
 	}
 	
