@@ -22,9 +22,9 @@ public class ConnectionPool {
 	private static Lock lock = new ReentrantLock(true);
 	private static ConnectionPool instance;
 	private BlockingQueue<Connection> freeConnections;
+	private Queue<Connection> releasedConnections;
 	
-	
-	private ConnectionPool(){
+	private ConnectionPool() {
 		freeConnections = new LinkedBlockingQueue<>(DEFAULT_POOL_SIZE);
 		for(int i = 0; i < DEFAULT_POOL_SIZE; i++) {
 			try {
@@ -32,8 +32,10 @@ public class ConnectionPool {
 			ProxyConnection connection = new ProxyConnection(connectionFactory.createConnection());
 			freeConnections.put(connection);
 			}catch(SQLException e) {
-				logger.error("Problem on create connection", e);
+				logger.error("Problem on create connection");
 				e.printStackTrace();;
+			}catch(InterruptedException e) {
+				logger.error("Interrupted excetpion at Connection Pool");
 			}
 		}
 	}
@@ -54,7 +56,7 @@ public class ConnectionPool {
 		try {
 			connection = freeConnections.take();
 		}catch(InterruptedException e) {
-			logger.error("connection take failure", e);
+			logger.error("connection take failure at GetConnection method");
 			
 		}
 		return connection;
@@ -62,7 +64,7 @@ public class ConnectionPool {
 	
 	public void releaseConnection(Connection connection) {
 		if (connection != null) {
-			freeConnections.put(connection);
+			freeConnections.offer(connection);
 		}
 	}
 	
@@ -71,9 +73,9 @@ public class ConnectionPool {
 			try {
 			freeConnections.take().close();
 			}catch(InterruptedException e) {
-				logger.error("interrupted exception in method killPool", e);
+				logger.error("interrupted exception in method killPool");
 			}catch(SQLException e) {
-				logger.error("SQLException in method killPool", e);
+				logger.error("SQLException in method killPool");
 			}
 		}
 	}
@@ -83,7 +85,7 @@ public class ConnectionPool {
 		try{
 			DriverManager.deregisterDriver(driver);
 		}catch(SQLException e){
-			logger.error("Cannot deregister driver", e);
+			logger.error("Cannot deregister driver");
 		}
 		});
 	}
