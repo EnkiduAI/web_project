@@ -22,7 +22,7 @@ public class ConnectionPool {
 	private static Lock lock = new ReentrantLock(true);
 	private static ConnectionPool instance;
 	private BlockingQueue<Connection> freeConnections;
-	private Queue<Connection> releasedConnections;
+	
 	
 	private ConnectionPool() {
 		freeConnections = new LinkedBlockingQueue<>(DEFAULT_POOL_SIZE);
