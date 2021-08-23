@@ -10,11 +10,11 @@ import com.epam.web.exception.DaoException;
 public interface BaseDao<K,T extends Entity> {
 	
  List<T> findAll() throws DaoException;
- T findById(K id);
- boolean delete(K id);
- boolean delete(T t);
- boolean create(T t);
- T update (T t);
+ T findById(K id) throws DaoException;
+ boolean delete(K id) throws DaoException;
+ boolean delete(T t) throws DaoException;
+ boolean create(T t) throws DaoException;
+ T update (T t) throws DaoException;
  
  default void close(Statement statement) throws DaoException {
 	 
