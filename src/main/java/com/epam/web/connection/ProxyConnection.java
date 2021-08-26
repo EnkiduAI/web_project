@@ -28,7 +28,7 @@ public ProxyConnection(Connection connection) {
 }
 
 void closeConnection() throws SQLException{
-	connection.commit();
+	connection.close();
 }
 
 @Override
