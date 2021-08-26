@@ -22,8 +22,13 @@ import java.sql.NClob;
 
 public class ProxyConnection  implements Connection{
 private Connection connection;
+
 public ProxyConnection(Connection connection) {
 	this.connection = connection;
+}
+
+void closeConnection() throws SQLException{
+	connection.commit();
 }
 
 @Override

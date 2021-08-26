@@ -34,7 +34,7 @@ public class ApplicationTypeDaoImpl implements ApplicationTypeDao{
 			insert into application_types(typeId, type) values(NULL,?)
 			""";
 	private static final String SQL_UPDATE_TYPE = """
-			update application_types set typeId = ?, type = ?
+			update application_types set type = ?
 			where typeId = ?
 			""";
 	@Override

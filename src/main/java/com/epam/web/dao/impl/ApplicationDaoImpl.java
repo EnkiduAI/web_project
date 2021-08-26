@@ -79,6 +79,9 @@ public class ApplicationDaoImpl implements ApplicationDao{
 		    applications.expirationDate) 
 		    values(NULL,?,?,?,?,?,?,?,?,?,?,?,?)
 			""";
+	private static final String SQL_UPDATE_APPLICATION = """
+			update mydb.applications set
+			""";
 
 	@Override
 	public List<ApplicationEntity> findAll() throws DaoException {
@@ -194,12 +197,19 @@ public class ApplicationDaoImpl implements ApplicationDao{
 		PreparedStatement statement = null;
 		try {
 			connection = ConnectionFactory.createConnection();
-			statement = connection.prepareStatement(SQL_INSERT_APPLICANT);
-			statement.setString(1, t.getOrganizationName());
-			statement.setString(2, t.getLogin());
-			statement.setString(3, t.getPassword());
-			statement.setString(4, t.getPhone());
-			statement.setString(5, t.getEmail());
+			statement = connection.prepareStatement(SQL_INSERT_APPLICATION);
+			statement.setInt(1, t.getApplicationId());
+			statement.setString(2, t.getApplicationStatus());
+			statement.setString(3, t.getOrganizationName());
+			statement.setBytes(4, t.getPhoto());
+			statement.setString(5, t.getName());
+			statement.setString(6, t.getSurname());
+			statement.setString(7, t.getTraits());
+			statement.setInt(8, t.getWeight());
+			statement.setInt(9, t.getHeight());
+			statement.setString(10, t.getDescription());
+			statement.setInt(11, t.getReward());
+			statement.setDate(5, t.getExpirationDate());
 			result = statement.executeUpdate();
 		}catch(SQLException e) {
 			throw new DaoException("creation failed at ApplicantDaoImpl", e);
@@ -208,12 +218,35 @@ public class ApplicationDaoImpl implements ApplicationDao{
 			close(connection);
 		}
 		return result>0;
-		return false;
 	}
 
 	@Override
 	public ApplicationEntity update(ApplicationEntity t) throws DaoException {
-		// TODO Auto-generated method stub
+		ApplicationEntity application = new ApplicationEntity();
+		Connection connection = null;
+		PreparedStatement statement = null;
+		application = findById(t.getApplicationId());
+		try {
+			connection = ConnectionFactory.createConnection();
+			statement = connection.prepareStatement(SQL_INSERT_APPLICATION);
+			statement.setString(2, t.getApplicationStatus());
+			statement.setString(3, t.getOrganizationName());
+			statement.setBytes(4, t.getPhoto());
+			statement.setString(5, t.getName());
+			statement.setString(6, t.getSurname());
+			statement.setString(7, t.getTraits());
+			statement.setInt(8, t.getWeight());
+			statement.setInt(9, t.getHeight());
+			statement.setString(10, t.getDescription());
+			statement.setInt(11, t.getReward());
+			statement.setDate(5, t.getExpirationDate());
+			result = statement.executeUpdate();
+		}catch(SQLException e) {
+			throw new DaoException("creation failed at ApplicantDaoImpl", e);
+		}finally {
+			close(statement);
+			close(connection);
+		}
 		return null;
 	}
 

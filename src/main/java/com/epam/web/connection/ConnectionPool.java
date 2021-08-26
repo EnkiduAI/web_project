@@ -21,22 +21,23 @@ public class ConnectionPool {
 	private static final AtomicBoolean isCreated = new AtomicBoolean(false);
 	private static Lock lock = new ReentrantLock(true);
 	private static ConnectionPool instance;
-	private BlockingQueue<Connection> freeConnections;
-	private Queue<Connection> releasedConnections;
+	private BlockingQueue<ProxyConnection> freeConnections;
+	private BlockingQueue<ProxyConnection> unavalibleConnections;
 	
 	private ConnectionPool() {
 		freeConnections = new LinkedBlockingQueue<>(DEFAULT_POOL_SIZE);
+		unavalibleConnections = new LinkedBlockingQueue<>(DEFAULT_POOL_SIZE);
 		for(int i = 0; i < DEFAULT_POOL_SIZE; i++) {
 			try {
-			ConnectionFactory connectionFactory = new ConnectionFactory();
-			ProxyConnection connection = new ProxyConnection(connectionFactory.createConnection());
-			freeConnections.put(connection);
+			Connection connection = ConnectionFactory.createConnection();
+			ProxyConnection proxyConnection = new ProxyConnection(connection);
+			freeConnections.add(proxyConnection);
 			}catch(SQLException e) {
 				logger.error("Problem on create connection");
-				e.printStackTrace();;
-			}catch(InterruptedException e) {
-				logger.error("Interrupted excetpion at Connection Pool");
 			}
+		}
+		if(freeConnections.isEmpty()) {
+			throw new RuntimeException();
 		}
 	}
 
@@ -52,34 +53,37 @@ public class ConnectionPool {
 	}
 	
 	public Connection getConnection() {
-		Connection connection = null;
+		ProxyConnection proxyConnection = null;
 		try {
-			connection = freeConnections.take();
+			proxyConnection = freeConnections.take();
+			unavalibleConnections.put(proxyConnection);
 		}catch(InterruptedException e) {
 			logger.error("connection take failure at GetConnection method");
 			
 		}
-		return connection;
+		return proxyConnection;
 	}
 	
-	 void releaseConnection(Connection connection) {
-		if (connection != null) {
+	 public boolean releaseConnection(Connection connection) {
+		if (!(connection instanceof ProxyConnection)) {
+			return false;
+		}
+		unavalibleConnections.remove(connection);
 			try {
-				freeConnections.put(connection);
+				freeConnections.put((ProxyConnection)connection);
 			} catch (InterruptedException e) {
 				logger.error("interrupted exception at releaseConnection;");
 			}
+			return true;
 		}
-	}
 	
-	public void killPool() {
+	
+	public void killPool() throws SQLException {
 		for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
 			try {
 			freeConnections.take().close();
 			}catch(InterruptedException e) {
 				logger.error("interrupted exception in method killPool");
-			}catch(SQLException e) {
-				logger.error("SQLException in method killPool");
 			}
 		}
 	}
