@@ -23,12 +23,12 @@ import java.sql.NClob;
 public class ProxyConnection  implements Connection{
 private Connection connection;
 
-public ProxyConnection(Connection connection) {
+ProxyConnection(Connection connection) {
 	this.connection = connection;
 }
 
 void closeConnection() throws SQLException{
-	connection.close();
+	connection.commit();
 }
 
 @Override

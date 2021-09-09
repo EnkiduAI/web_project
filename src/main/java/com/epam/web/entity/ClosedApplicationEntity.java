@@ -4,6 +4,19 @@ import java.sql.Date;
 
 public class ClosedApplicationEntity extends Entity{
 	private int closedApplicationId;
+	private int applicantId;
+	public int getApplicantId() {
+		return applicantId;
+	}
+
+	public void setApplicantId(int applicantId) {
+		this.applicantId = applicantId;
+	}
+
+	public void setClosedApplicationId(int closedApplicationId) {
+		this.closedApplicationId = closedApplicationId;
+	}
+
 	private int applicationId;
 	private Date date;
 	
@@ -38,6 +51,7 @@ public class ClosedApplicationEntity extends Entity{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + applicantId;
 		result = prime * result + applicationId;
 		result = prime * result + closedApplicationId;
 		result = prime * result + ((date == null) ? 0 : date.hashCode());
@@ -53,6 +67,8 @@ public class ClosedApplicationEntity extends Entity{
 		if (getClass() != obj.getClass())
 			return false;
 		ClosedApplicationEntity other = (ClosedApplicationEntity) obj;
+		if (applicantId != other.applicantId)
+			return false;
 		if (applicationId != other.applicationId)
 			return false;
 		if (closedApplicationId != other.closedApplicationId)
@@ -70,6 +86,8 @@ public class ClosedApplicationEntity extends Entity{
 		StringBuilder builder = new StringBuilder();
 		builder.append("ClosedApplicationEntity [closedApplicationId=");
 		builder.append(closedApplicationId);
+		builder.append(", applicantId=");
+		builder.append(applicantId);
 		builder.append(", applicationId=");
 		builder.append(applicationId);
 		builder.append(", date=");
@@ -77,6 +95,8 @@ public class ClosedApplicationEntity extends Entity{
 		builder.append("]");
 		return builder.toString();
 	}
+
+	
 	
 	
 

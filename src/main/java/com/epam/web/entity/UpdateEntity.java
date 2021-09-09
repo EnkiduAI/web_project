@@ -21,6 +21,9 @@ public class UpdateEntity extends Entity{
 	public int getMessageId() {
 		return messageId;
 	}
+	public void setMessageId(int id) {
+		this.messageId = id;
+	}
 	public int getUserId() {
 		return userId;
 	}

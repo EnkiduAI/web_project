@@ -8,7 +8,7 @@ import com.epam.web.command.PagePath;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class LoginCommandImpl implements Command{
-private LoginValidator validator;
+private LoginValidator validator = new LoginValidator();
 
 @Override
 public String execute(HttpServletRequest request) {
@@ -16,9 +16,9 @@ public String execute(HttpServletRequest request) {
 	String loginValue = request.getParameter(ParameterProvider.LOGIN);
 	String passwordValue = request.getParameter(ParameterProvider.PASSWORD);
 	if(validator.isValid(loginValue, passwordValue)) {
-		page = PagePath.MAIN;
+		page = PagePath.MAIN_ADMIN;
 	}else {
-		page = PagePath.LOGIN;
+		page = PagePath.LOGIN_ADMIN;
 	}
 	return page;
 }

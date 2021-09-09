@@ -42,10 +42,15 @@ public class ConnectionPool {
 	}
 
 	public static ConnectionPool getInstance() {
-		if(isCreated.getAndSet(true)) {
+		if(!isCreated.get()) {
 			lock.lock();
+			try {
 			if(instance == null) {
 				instance = new ConnectionPool();
+				isCreated.getAndSet(true);
+			}
+			}finally {
+				lock.unlock();
 			}
 		}
 		logger.log(Level.INFO,"created instance");

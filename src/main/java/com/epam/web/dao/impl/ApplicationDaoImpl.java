@@ -8,11 +8,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import com.epam.web.dao.TableColumns;
 
 import com.epam.web.connection.ConnectionFactory;
 import com.epam.web.dao.ApplicationDao;
 import com.epam.web.entity.ApplicationEntity;
-import com.epam.web.entity.ApplicationTypeEntity;
 import com.epam.web.exception.DaoException;
 
 public class ApplicationDaoImpl implements ApplicationDao{
@@ -20,9 +20,9 @@ public class ApplicationDaoImpl implements ApplicationDao{
 	private static final String SQL_FIND_ALL = """
 			SELECT 
 			applications.applicationId,
-			status.status,
-		    applicants.organizationName,
-		    application_types.type,
+			applications.statusId,
+		    applications.applicantId,
+		    applications.typeId,
 		    applications.photo,
 		    applications.name,
 		    applications.surname,
@@ -33,17 +33,14 @@ public class ApplicationDaoImpl implements ApplicationDao{
 		    applications.reward,
 		    applications.expirationDate
 			FROM
-		    mydb.applications
-		    join status on applications.statusId = status.statusId
-		    join applicants on applications.applicantId = applicants.applicantId
-		    join application_types on applications.typeId = application_types.typeId;
+		    mydb.applications;
 			""";
 	private static final String SQL_FIND_BY_ID = """
 			SELECT 
 			applications.applicationId,
-			status.status,
-		    applicants.organizationName,
-		    application_types.type,
+			applications.statusId,
+		    applications.applicantId,
+		    applications.typeId,
 		    applications.photo,
 		    applications.name,
 		    applications.surname,
@@ -55,19 +52,17 @@ public class ApplicationDaoImpl implements ApplicationDao{
 		    applications.expirationDate
 			FROM
 		    mydb.applications
-		    join status on applications.statusId = status.statusId
-		    join applicants on applications.applicantId = applicants.applicantId
-		    join application_types on applications.typeId = application_types.typeId
 		    where applications.applicationId = ?;
 			""";
 	private static final String SQL_DELETE_BY_ID = """ 
 			delete from mydb.applications where applications.applicationId = ?
 			""";
 	private static final String SQL_INSERT_APPLICATION = """
-			insert into applicants(applications.applicationId,
-			status.status,
-		    applicants.organizationName,
-		    application_types.type,
+			insert into mydb.applicants
+			(applications.applicationId,
+			applications.statusId,
+		    applications.applicantId,
+		    applications.typeId,
 		    applications.photo,
 		    applications.name,
 		    applications.surname,
@@ -81,6 +76,57 @@ public class ApplicationDaoImpl implements ApplicationDao{
 			""";
 	private static final String SQL_UPDATE_APPLICATION = """
 			update mydb.applications set
+			applications.applicationId = ?,
+			applications.statusId = ?,
+		    applications.applicantId = ?,
+		    applications.typeId = ?,
+		    applications.photo = ?,
+		    applications.name= ?,
+		    applications.surname = ?,
+		    applications.traits = ?,
+		    applications.weight = ?,
+		    applications.height = ?,
+		    applications.description = ?,
+		    applications.reward = ?,
+		    applications.expirationDate = ?;
+			""";
+	private static final String SQL_FIND_BY_STATUS = """
+			SELECT 
+			applications.applicationId,
+			applications.statusId,
+		    applications.applicantId,
+		    applications.typeId,
+		    applications.photo,
+		    applications.name,
+		    applications.surname,
+		    applications.traits,
+		    applications.weight,
+		    applications.height,
+		    applications.description,
+		    applications.reward,
+		    applications.expirationDate
+			FROM
+		    mydb.applications
+		    where applications.statusId = ?;
+			""";
+	private static final String SQL_FIND_BY_ORGANIZATION_NAME = """
+			SELECT 
+			applications.applicationId,
+			applications.statusId,
+		    applications.applicantId,
+		    applications.typeId,
+		    applications.photo,
+		    applications.name,
+		    applications.surname,
+		    applications.traits,
+		    applications.weight,
+		    applications.height,
+		    applications.description,
+		    applications.reward,
+		    applications.expirationDate
+			FROM
+		    mydb.applications
+		    where applications.organizationName = ?;
 			""";
 
 	@Override
@@ -94,19 +140,19 @@ public class ApplicationDaoImpl implements ApplicationDao{
 			ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL);
 			while(resultSet.next()) {
 				ApplicationEntity application = new ApplicationEntity();
-				application.setApplicationId(resultSet.getInt("applications.applicationId"));
-				application.setApplicationStatus(resultSet.getString("status.status"));
-				application.setOrganizationName(resultSet.getString("applicants.organizationName"));
-				application.setApplicationType(resultSet.getString("application_types.type"));
-				application.setPhoto(resultSet.getBytes("applications.photo"));
-				application.setName(resultSet.getString("applications.name"));
-				application.setSurname(resultSet.getString("applications.surname"));
-				application.setTraits(resultSet.getString("applications.traits"));
-				application.setWeight(resultSet.getInt("applications.weight"));
-				application.setHeight(resultSet.getInt("applications.height"));
-				application.setDescription(resultSet.getString("applications.description"));
-				application.setReward(resultSet.getInt("applications.reward"));
-				application.setExpirationDate(resultSet.getDate("applications.expirationDate"));
+				application.setApplicationId(resultSet.getInt(TableColumns.APPLICATION_ID));
+				application.setStatusId(resultSet.getInt(TableColumns.FK_STATUS_ID));
+				application.setApplicantId(resultSet.getInt(TableColumns.APPLICANT_ID));
+				application.setTypeId(resultSet.getInt(TableColumns.FK_TYPE_ID));
+				application.setPhoto(resultSet.getBytes(TableColumns.PHOTO));
+				application.setName(resultSet.getString(TableColumns.NAME));
+				application.setSurname(resultSet.getString(TableColumns.SURNAME));
+				application.setTraits(resultSet.getString(TableColumns.TRAITS));
+				application.setWeight(resultSet.getInt(TableColumns.WEIGHT));
+				application.setHeight(resultSet.getInt(TableColumns.HEIGHT));
+				application.setDescription(resultSet.getString(TableColumns.DESCRIPTION));
+				application.setReward(resultSet.getInt(TableColumns.REWARD));
+				application.setExpirationDate(resultSet.getDate(TableColumns.EXPIRATION_DATE));
 				applications.add(application);
 			}
 		}catch (SQLException e) {
@@ -129,19 +175,19 @@ public class ApplicationDaoImpl implements ApplicationDao{
 			statement.setInt(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			while(resultSet.next()) {	
-				applicationAtFindById.setApplicationId(resultSet.getInt("applications.applicationId"));
-				applicationAtFindById.setApplicationStatus(resultSet.getString("status.status"));
-				applicationAtFindById.setOrganizationName(resultSet.getString("applicants.organizationName"));
-				applicationAtFindById.setApplicationType(resultSet.getString("application_types.type"));
-				applicationAtFindById.setPhoto(resultSet.getBytes("applications.photo"));
-				applicationAtFindById.setName(resultSet.getString("applications.name"));
-				applicationAtFindById.setSurname(resultSet.getString("applications.surname"));
-				applicationAtFindById.setTraits(resultSet.getString("applications.traits"));
-				applicationAtFindById.setWeight(resultSet.getInt("applications.weight"));
-				applicationAtFindById.setHeight(resultSet.getInt("applications.height"));
-				applicationAtFindById.setDescription(resultSet.getString("applications.description"));
-				applicationAtFindById.setReward(resultSet.getInt("applications.reward"));
-				applicationAtFindById.setExpirationDate(resultSet.getDate("applications.expirationDate"));
+				applicationAtFindById.setApplicationId(resultSet.getInt(TableColumns.APPLICATION_ID));
+				applicationAtFindById.setStatusId(resultSet.getInt(TableColumns.FK_STATUS_ID));
+				applicationAtFindById.setApplicantId(resultSet.getInt(TableColumns.FK_APPLICANT_ID));
+				applicationAtFindById.setTypeId(resultSet.getInt(TableColumns.FK_TYPE_ID));
+				applicationAtFindById.setPhoto(resultSet.getBytes(TableColumns.PHOTO));
+				applicationAtFindById.setName(resultSet.getString(TableColumns.NAME));
+				applicationAtFindById.setSurname(resultSet.getString(TableColumns.SURNAME));
+				applicationAtFindById.setTraits(resultSet.getString(TableColumns.TRAITS));
+				applicationAtFindById.setWeight(resultSet.getInt(TableColumns.WEIGHT));
+				applicationAtFindById.setHeight(resultSet.getInt(TableColumns.HEIGHT));
+				applicationAtFindById.setDescription(resultSet.getString(TableColumns.DESCRIPTION));
+				applicationAtFindById.setReward(resultSet.getInt(TableColumns.REWARD));
+				applicationAtFindById.setExpirationDate(resultSet.getDate(TableColumns.EXPIRATION_DATE));
 			}	
 			}catch(SQLException e) {
 				throw new DaoException("problem at ApplicationDao: findById", e);
@@ -199,8 +245,8 @@ public class ApplicationDaoImpl implements ApplicationDao{
 			connection = ConnectionFactory.createConnection();
 			statement = connection.prepareStatement(SQL_INSERT_APPLICATION);
 			statement.setInt(1, t.getApplicationId());
-			statement.setString(2, t.getApplicationStatus());
-			statement.setString(3, t.getOrganizationName());
+			statement.setInt(2, t.getStatusId());
+			statement.setInt(3, t.getApplicantId());
 			statement.setBytes(4, t.getPhoto());
 			statement.setString(5, t.getName());
 			statement.setString(6, t.getSurname());
@@ -209,7 +255,7 @@ public class ApplicationDaoImpl implements ApplicationDao{
 			statement.setInt(9, t.getHeight());
 			statement.setString(10, t.getDescription());
 			statement.setInt(11, t.getReward());
-			statement.setDate(5, t.getExpirationDate());
+			statement.setDate(12, t.getExpirationDate());
 			result = statement.executeUpdate();
 		}catch(SQLException e) {
 			throw new DaoException("creation failed at ApplicantDaoImpl", e);
@@ -228,9 +274,9 @@ public class ApplicationDaoImpl implements ApplicationDao{
 		application = findById(t.getApplicationId());
 		try {
 			connection = ConnectionFactory.createConnection();
-			statement = connection.prepareStatement(SQL_INSERT_APPLICATION);
-			statement.setString(2, t.getApplicationStatus());
-			statement.setString(3, t.getOrganizationName());
+			statement = connection.prepareStatement(SQL_UPDATE_APPLICATION);
+			statement.setInt(2, t.getStatusId());
+			statement.setInt(3, t.getApplicantId());
 			statement.setBytes(4, t.getPhoto());
 			statement.setString(5, t.getName());
 			statement.setString(6, t.getSurname());
@@ -239,27 +285,87 @@ public class ApplicationDaoImpl implements ApplicationDao{
 			statement.setInt(9, t.getHeight());
 			statement.setString(10, t.getDescription());
 			statement.setInt(11, t.getReward());
-			statement.setDate(5, t.getExpirationDate());
-			result = statement.executeUpdate();
+			statement.setDate(12, t.getExpirationDate());
+			statement.executeUpdate();
 		}catch(SQLException e) {
-			throw new DaoException("creation failed at ApplicantDaoImpl", e);
+			throw new DaoException("update failed at ApplicantDaoImpl", e);
 		}finally {
 			close(statement);
 			close(connection);
 		}
-		return null;
+		return application;
 	}
 
 	@Override
-	public List<ApplicationEntity> findbyStatus(String status) throws DaoException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ApplicationEntity> findbyStatus(int statusId) throws DaoException {
+		Connection connection = null;
+		PreparedStatement statement = null;
+		List<ApplicationEntity> applicationAtFindByStatus = new ArrayList<>();
+		try {			
+			connection = ConnectionFactory.createConnection();
+			statement = connection.prepareStatement(SQL_FIND_BY_STATUS);
+			statement.setInt(1, statusId);
+			ResultSet resultSet = statement.executeQuery();
+			while(resultSet.next()) {
+				ApplicationEntity application = new ApplicationEntity();
+				application.setApplicationId(resultSet.getInt(TableColumns.APPLICATION_ID));
+				application.setStatusId(resultSet.getInt(TableColumns.FK_STATUS_ID));
+				application.setApplicantId(resultSet.getInt(TableColumns.FK_APPLICANT_ID));
+				application.setTypeId(resultSet.getInt(TableColumns.FK_TYPE_ID));
+				application.setPhoto(resultSet.getBytes(TableColumns.PHOTO));
+				application.setName(resultSet.getString(TableColumns.NAME));
+				application.setSurname(resultSet.getString(TableColumns.SURNAME));
+				application.setTraits(resultSet.getString(TableColumns.TRAITS));
+				application.setWeight(resultSet.getInt(TableColumns.WEIGHT));
+				application.setHeight(resultSet.getInt(TableColumns.HEIGHT));
+				application.setDescription(resultSet.getString(TableColumns.DESCRIPTION));
+				application.setReward(resultSet.getInt(TableColumns.REWARD));
+				application.setExpirationDate(resultSet.getDate(TableColumns.EXPIRATION_DATE));
+				applicationAtFindByStatus.add(application);
+			}	
+			}catch(SQLException e) {
+				throw new DaoException("problem at ApplicationDao: findById", e);
+			}finally {
+				close(statement);
+				close(connection);
+			}		
+		return applicationAtFindByStatus;
 	}
 
 	@Override
-	public List<ApplicationEntity> findbyOrganizationName(String name) throws DaoException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ApplicationEntity> findbyOrganizationName(int organizationName) throws DaoException {
+		Connection connection = null;
+		PreparedStatement statement = null;
+		List<ApplicationEntity> applicationAtFindByOrganizationName = new ArrayList<>();
+		try {			
+			connection = ConnectionFactory.createConnection();
+			statement = connection.prepareStatement(SQL_FIND_BY_ORGANIZATION_NAME);
+			statement.setInt(1, organizationName);
+			ResultSet resultSet = statement.executeQuery();
+			while(resultSet.next()) {
+				ApplicationEntity application = new ApplicationEntity();
+				application.setApplicationId(resultSet.getInt(TableColumns.APPLICATION_ID));
+				application.setStatusId(resultSet.getInt(TableColumns.FK_STATUS_ID));
+				application.setApplicantId(resultSet.getInt(TableColumns.FK_APPLICANT_ID));
+				application.setTypeId(resultSet.getInt(TableColumns.FK_TYPE_ID));
+				application.setPhoto(resultSet.getBytes(TableColumns.PHOTO));
+				application.setName(resultSet.getString(TableColumns.NAME));
+				application.setSurname(resultSet.getString(TableColumns.SURNAME));
+				application.setTraits(resultSet.getString(TableColumns.TRAITS));
+				application.setWeight(resultSet.getInt(TableColumns.WEIGHT));
+				application.setHeight(resultSet.getInt(TableColumns.HEIGHT));
+				application.setDescription(resultSet.getString(TableColumns.DESCRIPTION));
+				application.setReward(resultSet.getInt(TableColumns.REWARD));
+				application.setExpirationDate(resultSet.getDate(TableColumns.EXPIRATION_DATE));
+				applicationAtFindByOrganizationName.add(application);
+			}	
+			}catch(SQLException e) {
+				throw new DaoException("problem at ApplicationDao: findById", e);
+			}finally {
+				close(statement);
+				close(connection);
+			}		
+		return applicationAtFindByOrganizationName;
 	}
 
 }

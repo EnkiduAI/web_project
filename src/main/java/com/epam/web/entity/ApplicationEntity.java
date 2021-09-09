@@ -5,12 +5,9 @@ import java.util.Arrays;
 
 public class ApplicationEntity extends Entity{
 	private int applicationId;
-	private String applicationStatus;
-	private String organizationName;
-	private String applicationType;
-	//private int statusId;
-	//private int applicantId;
-	//private int typeId;
+	private int statusId;
+	private int applicantId;
+	private int typeId;
 	private byte[] photo;
 	private String name;
 	private String surname;
@@ -20,21 +17,18 @@ public class ApplicationEntity extends Entity{
 	private String description;
 	private int reward;
 	private Date expirationDate;
-	private ApplicationTypeEntity type;
-	private StatusEntity status;
-	private ApplicantEntity applicant;
 	public ApplicationEntity() {
 
 	}
 
-	public ApplicationEntity(int applicationId, String applicationStatus, String organizationName, 
-		    String applicationType, byte[] photo, 
+	public ApplicationEntity(int applicationId, int statusId, int applicantId, 
+		    int typeId, byte[] photo, 
 			String name, String surname, String traits, int weight, int height, String description, 
 			int reward, Date expirationDate) {
 		this.applicationId = applicationId;
-		this.applicationStatus = applicationStatus;
-		this.organizationName = organizationName;
-		this.applicationType = applicationType;
+		this.statusId = statusId;
+		this.applicantId = applicantId;
+		this.typeId = typeId;
 		this.photo = photo;
 		this.name = name;
 		this.surname = surname;
@@ -50,19 +44,27 @@ public class ApplicationEntity extends Entity{
 		return applicationId;
 	}
 	
-	/*public int getStatusId() {
+	public int getStatusId() {
 		return statusId;
-	}*/
-	/*public void setStatusId(int statusId) {
+	}
+	public void setStatusId(int statusId) {
 		this.statusId = statusId;
-	}*/
-	/*public int getApplicantId() {
+	}
+	public int getApplicantId() {
 		return applicantId;
-	}*/
+	}
 	
-	/*public int getTypeId() {
+	public void setApplicantId(int applicantId) {
+		this.applicantId = applicantId;
+	}
+	
+	public int getTypeId() {
 		return typeId;
-	}*/
+	}
+	
+	public void setTypeId(int typeId) {
+		this.typeId = typeId;
+	}
 	
 	public byte[] getPhoto() {
 		return photo;
@@ -123,50 +125,22 @@ public class ApplicationEntity extends Entity{
 		this.applicationId = applicationId;
 	}
 
-	/*public void setTypeId(int typeId) {
-		this.typeId = typeId;
-	}*/
-
-	public String getApplicationStatus() {
-		return applicationStatus;
-	}
-
-	public void setApplicationStatus(String applicationStatus) {
-		this.applicationStatus = applicationStatus;
-	}
-
-	public String getOrganizationName() {
-		return organizationName;
-	}
-
-	public void setOrganizationName(String organizationName) {
-		this.organizationName = organizationName;
-	}
-
-	public String getApplicationType() {
-		return applicationType;
-	}
-
-	public void setApplicationType(String applicationType) {
-		this.applicationType = applicationType;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + applicantId;
 		result = prime * result + applicationId;
-		result = prime * result + ((applicationStatus == null) ? 0 : applicationStatus.hashCode());
-		result = prime * result + ((applicationType == null) ? 0 : applicationType.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((expirationDate == null) ? 0 : expirationDate.hashCode());
 		result = prime * result + height;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((organizationName == null) ? 0 : organizationName.hashCode());
 		result = prime * result + Arrays.hashCode(photo);
 		result = prime * result + reward;
+		result = prime * result + statusId;
 		result = prime * result + ((surname == null) ? 0 : surname.hashCode());
 		result = prime * result + ((traits == null) ? 0 : traits.hashCode());
+		result = prime * result + typeId;
 		result = prime * result + weight;
 		return result;
 	}
@@ -180,17 +154,9 @@ public class ApplicationEntity extends Entity{
 		if (getClass() != obj.getClass())
 			return false;
 		ApplicationEntity other = (ApplicationEntity) obj;
+		if (applicantId != other.applicantId)
+			return false;
 		if (applicationId != other.applicationId)
-			return false;
-		if (applicationStatus == null) {
-			if (other.applicationStatus != null)
-				return false;
-		} else if (!applicationStatus.equals(other.applicationStatus))
-			return false;
-		if (applicationType == null) {
-			if (other.applicationType != null)
-				return false;
-		} else if (!applicationType.equals(other.applicationType))
 			return false;
 		if (description == null) {
 			if (other.description != null)
@@ -209,14 +175,11 @@ public class ApplicationEntity extends Entity{
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (organizationName == null) {
-			if (other.organizationName != null)
-				return false;
-		} else if (!organizationName.equals(other.organizationName))
-			return false;
 		if (!Arrays.equals(photo, other.photo))
 			return false;
 		if (reward != other.reward)
+			return false;
+		if (statusId != other.statusId)
 			return false;
 		if (surname == null) {
 			if (other.surname != null)
@@ -228,10 +191,47 @@ public class ApplicationEntity extends Entity{
 				return false;
 		} else if (!traits.equals(other.traits))
 			return false;
+		if (typeId != other.typeId)
+			return false;
 		if (weight != other.weight)
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ApplicationEntity [applicationId=");
+		builder.append(applicationId);
+		builder.append(", statusId=");
+		builder.append(statusId);
+		builder.append(", applicantId=");
+		builder.append(applicantId);
+		builder.append(", typeId=");
+		builder.append(typeId);
+		builder.append(", photo=");
+		builder.append(photo);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append(", surname=");
+		builder.append(surname);
+		builder.append(", traits=");
+		builder.append(traits);
+		builder.append(", weight=");
+		builder.append(weight);
+		builder.append(", height=");
+		builder.append(height);
+		builder.append(", description=");
+		builder.append(description);
+		builder.append(", reward=");
+		builder.append(reward);
+		builder.append(", expirationDate=");
+		builder.append(expirationDate);
+		builder.append("]");
+		return builder.toString();
+	}
+
+	
 
 	
 	

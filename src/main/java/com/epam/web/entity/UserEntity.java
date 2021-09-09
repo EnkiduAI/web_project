@@ -31,6 +31,10 @@ public class UserEntity extends Entity{
 	public int getUserId() {
 		return userId;
 	}
+	
+	public void setUserId(int id) {
+		this.userId = id;
+	}
 
 	public String getName() {
 		return name;

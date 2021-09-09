@@ -12,6 +12,10 @@ public class StatusEntity extends Entity{
 		this.statusId = statusId;
 		this.status = status;
 	}
+	
+	public void setStatusId(int id) {
+		this.statusId = id;
+	}
 
 	public int getStatusId() {
 		return statusId;

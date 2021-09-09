@@ -8,7 +8,7 @@ import java.util.Properties;
 public class ConnectionFactory {
 	private static final Properties properties = new Properties();
 	private static String URL ="";
-	private static final String DB_URL = "db.url";
+	private static final String DB_URL = "url";
 	private static final String RESOURCE = "database.properties";
 	private static final String DB_DRIVER = "driver";
 
