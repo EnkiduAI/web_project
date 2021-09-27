@@ -63,5 +63,25 @@ public class StatusEntity extends Entity{
 		return builder.toString();
 	}
 	
+	public static class StatusBuilder{
+		StatusEntity status = new StatusEntity();
+		public StatusBuilder() {
+			
+		}
+		
+		public StatusBuilder setStatusId(int id) {
+			status.setStatusId(id);
+			return this;
+		}
+		
+		public StatusBuilder setStatus(String status) {
+			this.status.setStatus(status);
+			return this;
+		}
+		
+		public StatusEntity build() {
+			return status;
+		}
+	}
 	
 }

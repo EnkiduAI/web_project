@@ -96,8 +96,36 @@ public class ClosedApplicationEntity extends Entity{
 		return builder.toString();
 	}
 
-	
-	
+
+	public static class ClosedApplicationsBuilder{
+		ClosedApplicationEntity closedApp = new ClosedApplicationEntity();
+		public ClosedApplicationsBuilder() {
+			
+		}
+		public ClosedApplicationsBuilder setClosedApplicationId(int id){
+			closedApp.setClosedApplicationId(id);
+			return this;
+		}
+		
+		public ClosedApplicationsBuilder setApplicationId(int id){
+			closedApp.setApplicationId(id);
+			return this;
+		}
+		
+		public ClosedApplicationsBuilder setApplicantId (int id){
+			closedApp.setApplicantId(id);
+			return this;
+		}
+		
+		public ClosedApplicationsBuilder setDate(Date date){
+			closedApp.setDate(date);
+			return this;
+		}
+		
+		public ClosedApplicationEntity build() {
+			return closedApp;
+		}
+	}
 	
 
 }

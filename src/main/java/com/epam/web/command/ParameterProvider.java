@@ -8,6 +8,7 @@ public static final String LANGUAGE = "language";
 public static final String CURRENT_LOCALE = "currentLocale";
 public static final String CURRENT_BUNDLE = "currentBundle";
 public static final String SECOND_LOCALE = "secondLocale";
+public static final String CURRENT_PAGE = "currentPage";
 private ParameterProvider() {
 	
 }

@@ -3,7 +3,7 @@ package com.epam.web.entity;
 import java.sql.Date;
 import java.util.Arrays;
 
-public class ApplicationEntity extends Entity{
+public class ApplicationEntity extends Entity {
 	private int applicationId;
 	private int statusId;
 	private int applicantId;
@@ -232,7 +232,81 @@ public class ApplicationEntity extends Entity{
 	}
 
 	
-
+public static class ApplicationBuilder{
+	ApplicationEntity application = new ApplicationEntity();
+	
+	public ApplicationBuilder() {		
+	}
+	
+	public ApplicationBuilder setApplicationId(int id){
+		application.setApplicationId(id);
+		return this;
+	}
+	
+	public ApplicationBuilder setStatusId(int id){
+		application.setStatusId(id);
+		return this;
+	}
+	
+	public ApplicationBuilder setApplicantId(int id){
+		application.setApplicantId(id);
+		return this;
+	}
+	
+	public ApplicationBuilder setTypeId(int id){
+		application.setTypeId(id);
+		return this;
+	}
+	
+	public ApplicationBuilder setPhoto(byte[] photo){
+		application.setPhoto(photo);
+		return this;
+	}
+	
+	public ApplicationBuilder setName (String name){
+		application.setName(name);
+		return this;
+	}
+	
+	public ApplicationBuilder setSurname (String surname){
+		application.setSurname(surname);
+		return this;
+	}
+	
+	public ApplicationBuilder setTraits (String traits){
+		application.setTraits(traits);
+		return this;
+	}
+	
+	public ApplicationBuilder setWeight (int weihgt){
+		application.setWeight(weihgt);
+		return this;
+	}
+	
+	public ApplicationBuilder setHeight (int height){
+		application.setHeight(height);
+		return this;
+	}
+	
+	public ApplicationBuilder setDescription (String description){
+		application.setDescription(description);
+		return this;
+	}
+	
+	public ApplicationBuilder setReward (int reward){
+		application.setReward(reward);
+		return this;
+	}
+	
+	public ApplicationBuilder setExpirationDate (Date expirationDate){
+		application.setExpirationDate(expirationDate);
+		return this;
+	}
+	
+	public ApplicationEntity build() {
+		return application;
+	}
+}
 	
 	
 	

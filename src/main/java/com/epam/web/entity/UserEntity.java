@@ -8,11 +8,9 @@ public class UserEntity extends Entity{
 	private String password;
 	private String email;
 	private String phone;
-	private enum Role{ADMIN, USER};
-	private Role role;
 	
 	public UserEntity(int userId, String name, String surname, String login, String password, String email,
-			String phone, Role role) {
+			String phone) {
 		super();
 		this.userId = userId;
 		this.name = name;
@@ -21,7 +19,6 @@ public class UserEntity extends Entity{
 		this.password = password;
 		this.email = email;
 		this.phone = phone;
-		this.role = role;
 	}
 
 	public UserEntity() {
@@ -84,13 +81,7 @@ public class UserEntity extends Entity{
 		this.phone = phone;
 	}
 
-	public Role getRole() {
-		return role;
-	}
 
-	public void setRole(Role role) {
-		this.role = role;
-	}
 
 	@Override
 	public int hashCode() {
@@ -101,7 +92,6 @@ public class UserEntity extends Entity{
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((phone == null) ? 0 : phone.hashCode());
-		result = prime * result + ((role == null) ? 0 : role.hashCode());
 		result = prime * result + ((surname == null) ? 0 : surname.hashCode());
 		result = prime * result + userId;
 		return result;
@@ -141,8 +131,6 @@ public class UserEntity extends Entity{
 				return false;
 		} else if (!phone.equals(other.phone))
 			return false;
-		if (role != other.role)
-			return false;
 		if (surname == null) {
 			if (other.surname != null)
 				return false;
@@ -170,12 +158,55 @@ public class UserEntity extends Entity{
 		builder.append(email);
 		builder.append(", phone=");
 		builder.append(phone);
-		builder.append(", role=");
-		builder.append(role);
 		builder.append("]");
 		return builder.toString();
 	}
 	
+	public static class UserBuilder{
+		UserEntity user = new UserEntity();
+		
+		public UserBuilder() {
+			
+		}
+		
+		public UserBuilder setUserId(int id) {
+			user.setUserId(id);
+			return this;
+		}
+		
+		public UserBuilder setUserName(String name) {
+			user.setName(name);
+			return this;
+		}
+		
+		public UserBuilder setSurname(String surname) {
+			user.setSurname(surname);
+			return this;
+		}
+		
+		public UserBuilder setLogin(String login) {
+			user.setLogin(login);
+			return this;
+		}
+		
+		public UserBuilder setPassword(String password) {
+			user.setPassword(password);
+			return this;
+		}
+		
+		public UserBuilder setEmail (String email) {
+			user.setEmail(email);
+			return this;
+		}
+		
+		public UserBuilder setPhone (String phone) {
+			user.setPhone(phone);
+			return this;
+		}
+		
+		public UserEntity build() {
+			return user;
+		}
 	
-
+	}
 }

@@ -89,6 +89,36 @@ public class UpdateEntity extends Entity{
 		return builder.toString();
 	}
 	
-	
+	public static class UpdateBuilder {
+		UpdateEntity update = new UpdateEntity();
+		
+		public UpdateBuilder() {
+			
+		}
+		
+		public UpdateBuilder setMessageId(int id) {
+			update.setMessageId(id);
+			return this;
+		}
+		
+		public UpdateBuilder setUserId (int id) {
+			update.setUserId(id);
+			return this;
+		}
+		
+		public UpdateBuilder setApplicationId(int id) {
+			update.setApplicationId(id);
+			return this;
+		}
+		
+		public UpdateBuilder setMessage(String message) {
+			update.setMessage(message);
+			return this;
+		}
+		
+		public UpdateEntity build() {
+			return update;
+		}
+	}
 
 }

@@ -62,5 +62,25 @@ public String toString() {
 }
 
 
+public static class TypeBuilder{
+	ApplicationTypeEntity type = new ApplicationTypeEntity();
+	public TypeBuilder() {
+		
+	}
+	
+	public TypeBuilder setId (int id){
+		type.setId(id);
+		return this;
+	}
+	
+	public TypeBuilder setType(String type){
+		this.type.setType(type);
+		return this;
+	}
+	
+	public ApplicationTypeEntity build() {
+		return type;
+	}
+}
 
 }

@@ -7,6 +7,11 @@ public enum RouteType{
 private String path;
 private RouteType route = RouteType.FORWARD;
 
+public Router(String pagepath, RouteType routerType) {
+	this.path = pagepath;
+	this.route = routerType;
+}
+
 public String getPath() {
 	return path;
 }

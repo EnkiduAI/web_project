@@ -4,17 +4,31 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.epam.web.connection.ConnectionFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+
+import com.epam.web.connection.ConnectionPool;
 import com.epam.web.dao.ClosedApplicationsDao;
 import com.epam.web.entity.ClosedApplicationEntity;
 import com.epam.web.exception.DaoException;
 import static com.epam.web.dao.TableColumns.*;
 
 public class ClosedApplicationDaoImpl implements ClosedApplicationsDao{
+	private static final Logger logger = LogManager.getLogger();
+	private static ClosedApplicationDaoImpl instance = new ClosedApplicationDaoImpl();
+	private ConnectionPool connectionPool = ConnectionPool.getInstance();
+	
+	private ClosedApplicationDaoImpl() {
+		
+	}
+	
+	public static ClosedApplicationDaoImpl getInstance() {
+		return instance;
+	}
 	
 private static final String SQL_FIND_ALL = """
 		select closed_applications.closedApplicationId, closed_applications.applicationId
@@ -54,69 +68,48 @@ private static final String SQL_FIND_BY_APPLICANT_ID = """
 	@Override
 	public List<ClosedApplicationEntity> findAll() throws DaoException {
 		List<ClosedApplicationEntity> closedApplicationsList = new ArrayList<>();
-		Connection connection = null;
-		Statement statement = null;
-		try {
-			connection = ConnectionFactory.createConnection();
-			statement = connection.createStatement();
+		try(Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_FIND_ALL)) {
 			ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL);
 			while(resultSet.next()) {
-				ClosedApplicationEntity closedApplication = new ClosedApplicationEntity();
-				closedApplication.setClosedApplicationId(resultSet.getInt(CLOSED_APPLICATION_ID));
-				closedApplication.setApplicationId(resultSet.getInt(FK_APPLICATION_ID));
-				closedApplication.setApplicantId(resultSet.getInt(CLOSED_APPLICATIONS_APPLICANT_ID));
-				closedApplication.setDate(resultSet.getDate(DATE));
+				ClosedApplicationEntity closedApplication = buildClosedApplication(resultSet);
 				closedApplicationsList.add(closedApplication);
 			}
 			}catch (SQLException e) {
+				logger.error("Problem at findAll method at ClosedApplicationDaoImpl", e);
 				throw new DaoException("error ocurred at findAll: ClosedApplicationDaoImpl", e);
-		}finally {
-			close(connection);
-			close(statement);
 		}
 		return closedApplicationsList;
 	}
 
 	@Override
 	public ClosedApplicationEntity findById(Integer id) throws DaoException {
-		Connection connection = null;
-		PreparedStatement statement = null;
 		ClosedApplicationEntity closedApplication = new ClosedApplicationEntity();
-		try {			
-			connection = ConnectionFactory.createConnection();
-			statement = connection.prepareStatement(SQL_FIND_BY_ID);
+		try(Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_ID)) {			
 			statement.setInt(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			while(resultSet.next()) {	
-				closedApplication.setClosedApplicationId(resultSet.getInt(CLOSED_APPLICATION_ID));
-				closedApplication.setApplicationId(resultSet.getInt(FK_APPLICATION_ID));
-				closedApplication.setApplicantId(resultSet.getInt(CLOSED_APPLICATIONS_APPLICANT_ID));
+				closedApplication = buildClosedApplication(resultSet);
 				closedApplication.setDate(resultSet.getDate(DATE));
 			}	
 			}catch(SQLException e) {
+				logger.error("Problem at findById method at ClosedApplicationDaoImpl", e);
 				throw new DaoException("problem at ClosedApplicationDaoImpl: findById", e);
-			}finally {
-				close(statement);
-				close(connection);
-			}		
+			}	
 		return closedApplication;
 	}
 
 	@Override
 	public boolean delete(Integer id) throws DaoException {
 		int result = 0;
-		Connection connection = null;
-		PreparedStatement statement = null;
-		try {
-			connection = ConnectionFactory.createConnection();
-			statement = connection.prepareStatement(SQL_DELETE_BY_ID);
+		try(Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_DELETE_BY_ID)) {
 			statement.setInt(1, id);
 			result = statement.executeUpdate();
 		}catch(SQLException e) {
+			logger.error("Problem at delete(Id) method at ClosedApplicationDaoImpl", e);
 			throw new DaoException("error occured during delete by id at ClosedApplicationDaoImpl", e);
-		}finally {
-			close(statement);
-			close(connection);
 		}
 		return result>0;
 	}
@@ -124,18 +117,13 @@ private static final String SQL_FIND_BY_APPLICANT_ID = """
 	@Override
 	public boolean delete(ClosedApplicationEntity t) throws DaoException {
 		int result = 0;
-		Connection connection = null;
-		PreparedStatement statement = null;
-		try {
-			connection = ConnectionFactory.createConnection();
-			statement = connection.prepareStatement(SQL_DELETE_BY_ID);
+		try (Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_DELETE_BY_ID)){
 			statement.setInt(1, t.getClosedApplicationId());
 			result = statement.executeUpdate();
 		}catch(SQLException e) {
+			logger.error("Problem at delete(entity) method at ClosedApplicationDaoImpl", e);
 			throw new DaoException("error ocured during deletion entity at ClosedApplicationDaoImpl",e);
-		}finally {
-			close(statement);
-			close(connection);
 		}
 		return result>0;
 	}
@@ -143,21 +131,16 @@ private static final String SQL_FIND_BY_APPLICANT_ID = """
 	@Override
 	public boolean create(ClosedApplicationEntity t) throws DaoException {
 		int result = 0;
-		Connection connection = null;
-		PreparedStatement statement = null;
-		try {
-			connection = ConnectionFactory.createConnection();
-			statement = connection.prepareStatement(SQL_CREATE_CLOSED_APPLICATION);
+		try (Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_CREATE_CLOSED_APPLICATION)){
 			statement.setInt(1, t.getClosedApplicationId());
 			statement.setInt(2, t.getApplicationId());
 			statement.setInt(3, t.getApplicantId());
 			statement.setDate(4, t.getDate());
 			result = statement.executeUpdate();
 		}catch(SQLException e) {
+			logger.error("Problem at create method at ClosedApplicationDaoImpl", e);
 			throw new DaoException("creation failed at ClosedApplicationDaoImpl", e);
-		}finally {
-			close(statement);
-			close(connection);
 		}
 		return result>0;
 	}
@@ -165,51 +148,47 @@ private static final String SQL_FIND_BY_APPLICANT_ID = """
 	@Override
 	public ClosedApplicationEntity update(ClosedApplicationEntity t) throws DaoException {
 		ClosedApplicationEntity closedApplication = new ClosedApplicationEntity();
-		Connection connection = null;
-		PreparedStatement statement = null;
 		closedApplication = findById(t.getClosedApplicationId());
-		try {
-			connection = ConnectionFactory.createConnection();
-			statement = connection.prepareStatement(SQL_UPDATE_STATUS);
+		try (Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_STATUS)){
 			statement.setInt(1, t.getClosedApplicationId());
 			statement.setInt(2, t.getApplicationId());
 			statement.setInt(3, t.getApplicantId());
 			statement.setDate(4, t.getDate());
 			statement.executeUpdate();
 		}catch(SQLException e) {
+			logger.error("Problem at update method at ClosedApplicationDaoImpl", e);
 			throw new DaoException("update failed at ClosedApplicationDaoImpl", e);
-		}finally {
-			close(statement);
-			close(connection);
 		}
 		return closedApplication;
 	}
 
 	@Override
 	public List<ClosedApplicationEntity> findByApplicantId(int applicantId) throws DaoException {
-		Connection connection = null;
-		PreparedStatement statement = null;
 		List<ClosedApplicationEntity> closedApplications = new ArrayList<>();
-		try {			
-			connection = ConnectionFactory.createConnection();
-			statement = connection.prepareStatement(SQL_FIND_BY_APPLICANT_ID);
+		try (Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_APPLICANT_ID)){			
 			statement.setInt(1, applicantId);
 			ResultSet resultSet = statement.executeQuery();
 			while(resultSet.next()) {	
-				ClosedApplicationEntity closedApplication = new ClosedApplicationEntity();
-				closedApplication.setClosedApplicationId(resultSet.getInt(CLOSED_APPLICATION_ID));
-				closedApplication.setApplicationId(resultSet.getInt(FK_APPLICATION_ID));
-				closedApplication.setApplicantId(resultSet.getInt(CLOSED_APPLICATIONS_APPLICANT_ID));
-				closedApplication.setDate(resultSet.getDate(DATE));
+				ClosedApplicationEntity closedApplication = buildClosedApplication(resultSet);
 				closedApplications.add(closedApplication);
 			}	
 			}catch(SQLException e) {
+				logger.error("Problem at update method at ClosedApplicationDaoImpl", e);
 				throw new DaoException("problem at ClosedApplicationDaoImpl: findByStatus", e);
-			}finally {
-				close(statement);
-				close(connection);
-			}		
+			}	
 		return closedApplications;
 	}
 
+	private ClosedApplicationEntity buildClosedApplication(ResultSet resultSet) throws SQLException{
+		ClosedApplicationEntity closedApplication = new ClosedApplicationEntity.ClosedApplicationsBuilder()
+				.setClosedApplicationId(resultSet.getInt(CLOSED_APPLICATION_ID))
+				.setApplicationId(resultSet.getInt(FK_APPLICATION_ID))
+				.setApplicantId(resultSet.getInt(CLOSED_APPLICATIONS_APPLICANT_ID))
+				.setDate(resultSet.getDate(DATE))
+				.build();
+		return closedApplication;
+	}
+	
 }

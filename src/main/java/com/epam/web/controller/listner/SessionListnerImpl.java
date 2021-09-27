@@ -14,7 +14,6 @@ public class SessionListnerImpl implements HttpSessionListener {
 	private static final String DEFAULT_LOCALE = "en";
     private static final String SECOND_LOCALE = "ru_RU";
     private static final String DEFAULT_BUNDLE = "prop.pagecontent";
-    private static final String DEFAULT_PREVIOUS_QUERY = "/pages/login.jsp";
 
 
     @Override

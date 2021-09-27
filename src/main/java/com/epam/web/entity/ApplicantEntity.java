@@ -20,6 +20,7 @@ public class ApplicantEntity extends Entity{
 		this.login = login;
 		this.password = password;
 		this.email = email;
+		this.phone = phone;
 	}
 
 	public int getId() {
@@ -141,7 +142,43 @@ public class ApplicantEntity extends Entity{
 		return builder.toString();
 	}
 	
-	
 
+	
+	public static class ApplicantBuilder{
+		
+		ApplicantEntity applicant = new ApplicantEntity();
+		
+		public ApplicantBuilder() {
+		}
+		
+		public ApplicantBuilder setId(int id){
+			applicant.setId(id);
+			return this;
+		}
+		
+		public ApplicantBuilder setOrganizationName(String name){
+			applicant.setOrganizationName(name);
+			return this;
+		}
+		public ApplicantBuilder setLogin(String login){
+			applicant.setLogin(login);
+			return this;
+		}
+		public ApplicantBuilder setPassword(String password){
+			applicant.setPassword(password);
+			return this;
+		}
+		public ApplicantBuilder setEmail(String email){
+			applicant.setEmail(email);
+			return this;
+		}
+		public ApplicantBuilder setPhone(String phone){
+			applicant.setPhone(phone);
+			return this;
+		}
+		public ApplicantEntity build() {
+			return applicant;
+		}
+	}
 }
  

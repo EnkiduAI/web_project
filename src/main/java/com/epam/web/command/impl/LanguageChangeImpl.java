@@ -1,11 +1,13 @@
 package com.epam.web.command.impl;
 
+
+
 import com.epam.web.command.Command;
-import com.epam.web.command.PagePath;
 import com.epam.web.command.ParameterProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import static com.epam.web.command.PagePath.*;
 
 public class LanguageChangeImpl implements Command{
 	 private static final String RUSSIAN_LOCALE = "ru";
@@ -14,8 +16,9 @@ public class LanguageChangeImpl implements Command{
 	 private static final String RUSSIAN_BUNDLE = "prop.pagecontent_ru_RU";
 	@Override
 	public String execute(HttpServletRequest request) {
-		String page = PagePath.LOGINSELECT;
 		HttpSession session = request.getSession();
+		String page = request.getParameter(CURRENT_PAGE).substring(34);
+		
 		 String language = request.getParameter(ParameterProvider.LANGUAGE);
 		 
 		 if(language.equals(ENGLISH_LOCALE)) {

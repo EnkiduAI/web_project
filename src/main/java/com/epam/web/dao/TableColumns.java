@@ -5,10 +5,10 @@ public class TableColumns {
 	// applicants
 	public static final String APPLICANT_ID = "applicantId";
 	public static final String ORGANIZATION_NAME = "organizationName";
-	public static final String LOGIN = "login";
-	public static final String PASSWORD = "password";
-	public static final String EMAIL = "email";
-	public static final String PHONE = "phone";
+	public static final String APPLICANT_LOGIN = "login";
+	public static final String APPLICANT_PASSWORD = "password";
+	public static final String APPLICANT_EMAIL = "email";
+	public static final String APPLICANT_PHONE = "phone";
 	
 	// applications
 	public static final String APPLICATION_ID = "applications.applicationId";

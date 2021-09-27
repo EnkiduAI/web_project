@@ -4,16 +4,33 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import com.epam.web.connection.ConnectionFactory;
+import org.apache.logging.log4j.LogManager;
+
+import org.apache.logging.log4j.Logger;
+
+
+import com.epam.web.connection.ConnectionPool;
 import com.epam.web.dao.ApplicantDao;
 import com.epam.web.entity.ApplicantEntity;
 import com.epam.web.exception.DaoException;
+import static com.epam.web.dao.TableColumns.*;
 
 
 public class ApplicantDaoImpl implements ApplicantDao{
+	private static final Logger logger = LogManager.getLogger();
+	private static ApplicantDaoImpl instance = new ApplicantDaoImpl();
+	private ConnectionPool connectionPool = ConnectionPool.getInstance();
+	
+	
+	private ApplicantDaoImpl() {
+		
+	}
+	
+	public static ApplicantDaoImpl getInstance() {
+		return instance;
+	}
 	
 	private static final String SQL_SELECT_ORGANIZATION_BY_NAME = """
 			select applicantId, organizationName, login, password, email, phone 
@@ -41,55 +58,37 @@ public class ApplicantDaoImpl implements ApplicantDao{
 
 	@Override
 	public List<ApplicantEntity> findAll() throws DaoException{
-		List<ApplicantEntity> applicants = new ArrayList<>();
-		Connection connection = null;
-		Statement statement = null;
-		try {
-			connection = ConnectionFactory.createConnection();
-			statement = connection.createStatement();
-			ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_APPLICANTS);
+		List<ApplicantEntity> applicants = new ArrayList<>();	
+		try (Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL_APPLICANTS)){
+			try(ResultSet resultSet = statement.executeQuery()){
 			while(resultSet.next()) {
-				ApplicantEntity applicant = new ApplicantEntity();
-				applicant.setId(resultSet.getInt("applicantId"));
-				applicant.setOrganizationName(resultSet.getString("organizationName"));
-				applicant.setLogin(resultSet.getString("login"));
-				applicant.setPassword(resultSet.getString("password"));
-				applicant.setPhone(resultSet.getString("phone"));
-				applicant.setEmail(resultSet.getString("email"));
+				ApplicantEntity applicant = buildApplicant(resultSet);				
 				applicants.add(applicant);
 			}
+			}
 		}catch (SQLException e) {
+			logger.error("Problem at findAll method at ApplicantDaoImpl", e);
 			throw new DaoException(e);
-		}finally {
-			close(statement);
-			close(connection);
 		}
 		return applicants;
 	}
 
 	@Override
 	public ApplicantEntity findById(Integer id) throws DaoException {
-		Connection connection = null;
-		PreparedStatement statement = null;
+		
 		ApplicantEntity applicant = new ApplicantEntity();
-		try {			
-			connection = ConnectionFactory.createConnection();
-			statement = connection.prepareStatement(SQL_FIND_BY_ID);
+		try(Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_ID))
+		{			
 			statement.setInt(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			while(resultSet.next()) {	
-				applicant.setId(resultSet.getInt("applicantId"));
-				applicant.setOrganizationName(resultSet.getString("organizationName"));
-				applicant.setLogin(resultSet.getString("login"));
-				applicant.setPassword(resultSet.getString("password"));
-				applicant.setEmail(resultSet.getString("email"));
-				applicant.setPhone(resultSet.getString("phone"));
+				applicant = buildApplicant(resultSet);
 			}	
 			}catch(SQLException e) {
+				logger.error("Problem at findById method at ApplicantDaoImpl", e);
 				throw new DaoException("problem at Applicant DAO: findById", e);
-			}finally {
-				close(statement);
-				close(connection);
 			}		
 		return applicant;
 	}
@@ -97,18 +96,13 @@ public class ApplicantDaoImpl implements ApplicantDao{
 	@Override
 	public boolean delete(Integer id) throws DaoException {
 		int result = 0;
-		Connection connection = null;
-		PreparedStatement statement = null;
-		try {
-			connection = ConnectionFactory.createConnection();
-			statement = connection.prepareStatement(SQL_DELETE_BY_ID);
+		try (Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_DELETE_BY_ID)){
 			statement.setInt(1, id);
 			result = statement.executeUpdate();
 		}catch(SQLException e) {
+			logger.error("Problem at delete(ID) method at ApplicantDaoImpl", e);
 			throw new DaoException("error occured during delete by id at ApplicantDaoImpl", e);
-		}finally {
-			close(statement);
-			close(connection);
 		}
 		return result>0;
 	}
@@ -116,18 +110,13 @@ public class ApplicantDaoImpl implements ApplicantDao{
 	@Override
 	public boolean delete(ApplicantEntity t) throws DaoException {
 		int result = 0;
-		Connection connection = null;
-		PreparedStatement statement = null;
-		try {
-			connection = ConnectionFactory.createConnection();
-			statement = connection.prepareStatement(SQL_DELETE_BY_ID);
+		try (Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_DELETE_BY_ID)){
 			statement.setInt(1, t.getId());
 			result = statement.executeUpdate();
 		}catch(SQLException e) {
+			logger.error("Problem at delete(ENTITY) method at ApplicantDaoImpl", e);
 			throw new DaoException("error ocured during deletion entity at ApplicantDaoImpl",e);
-		}finally {
-			close(statement);
-			close(connection);
 		}
 		return result>0;
 	}
@@ -135,11 +124,8 @@ public class ApplicantDaoImpl implements ApplicantDao{
 	@Override
 	public boolean create(ApplicantEntity t) throws DaoException {
 		int result = 0;
-		Connection connection = null;
-		PreparedStatement statement = null;
-		try {
-			connection = ConnectionFactory.createConnection();
-			statement = connection.prepareStatement(SQL_INSERT_APPLICANT);
+		try(Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_INSERT_APPLICANT)) {			
 			statement.setString(1, t.getOrganizationName());
 			statement.setString(2, t.getLogin());
 			statement.setString(3, t.getPassword());
@@ -147,10 +133,8 @@ public class ApplicantDaoImpl implements ApplicantDao{
 			statement.setString(5, t.getEmail());
 			result = statement.executeUpdate();
 		}catch(SQLException e) {
+			logger.error("Problem at create method at ApplicantDaoImpl", e);
 			throw new DaoException("creation failed at ApplicantDaoImpl", e);
-		}finally {
-			close(statement);
-			close(connection);
 		}
 		return result>0;
 	}
@@ -158,12 +142,9 @@ public class ApplicantDaoImpl implements ApplicantDao{
 	@Override
 	public ApplicantEntity update(ApplicantEntity t) throws DaoException {
 		ApplicantEntity applicant = new ApplicantEntity();
-		Connection connection = null;
-		PreparedStatement statement = null;
 		applicant = findById(t.getId());
-		try {
-			connection = ConnectionFactory.createConnection();
-			statement = connection.prepareStatement(SQL_UPDATE_APPLICANT);			
+		try (Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_APPLICANT)){			
 			statement.setString(1, t.getOrganizationName());
 			statement.setString(2, t.getLogin());
 			statement.setString(3, t.getPassword());
@@ -172,41 +153,39 @@ public class ApplicantDaoImpl implements ApplicantDao{
 			statement.setInt(6, t.getId());
 			statement.executeUpdate();
 		}catch(SQLException e) {
+			logger.error("Problem at update method at ApplicantDaoImpl", e);
 			throw new DaoException("error occured during update at ApplicantDaoImpl");
-		}finally {
-			close(statement);
-			close(connection);
 		}
 		return applicant;
 	}
 
 	@Override
-	public List<ApplicantEntity> findAllByOrganizationName(String name) throws DaoException{
-		List<ApplicantEntity> applicatns = new ArrayList<>();
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-		try {
-			connection = ConnectionFactory.createConnection();
-			preparedStatement = connection.prepareStatement(SQL_SELECT_ORGANIZATION_BY_NAME);
-			preparedStatement.setString(1, name);
-			ResultSet resultSet = preparedStatement.executeQuery();
+	public ApplicantEntity findByOrganizationName(String name) throws DaoException{
+		ApplicantEntity applicant = new ApplicantEntity();
+		try(Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ORGANIZATION_BY_NAME)) {
+			statement.setString(1, name);
+			ResultSet resultSet = statement.executeQuery();
 			while(resultSet.next()) {
-				ApplicantEntity applicant = new ApplicantEntity();
-				applicant.setId(resultSet.getInt("applicantId"));
-				applicant.setOrganizationName(resultSet.getString("organizationName"));
-				applicant.setLogin(resultSet.getString("login"));
-				applicant.setPassword(resultSet.getString("password"));
-				applicant.setEmail(resultSet.getString("email"));
-				applicant.setPhone(resultSet.getString("phone"));
-				applicatns.add(applicant);
+				applicant = buildApplicant(resultSet);
 			}
 		}catch(SQLException e) {
+			logger.error("Problem at findAllByOrganizationName method at ApplicantDaoImpl", e);
 			throw new DaoException(e);
-		}finally {
-			close(preparedStatement);
-			close(connection);
 		}
-		return applicatns;
+		return applicant;
+	}
+
+	private ApplicantEntity buildApplicant(ResultSet resultSet) throws SQLException{
+		ApplicantEntity applicant = new ApplicantEntity.ApplicantBuilder()
+				.setId(resultSet.getInt(APPLICANT_ID))
+				.setOrganizationName(resultSet.getString(ORGANIZATION_NAME))
+				.setLogin(resultSet.getString(APPLICANT_LOGIN))
+				.setPassword(resultSet.getString(APPLICANT_PASSWORD))
+				.setEmail(resultSet.getString(APPLICANT_PASSWORD))
+				.setPhone(resultSet.getString(APPLICANT_PHONE))
+				.build();
+		return applicant;
 	}
 
 }
