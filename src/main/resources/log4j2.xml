@@ -1,31 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="debug" strict="true"
-               name="XMLConfigTest" packages="org.apache.logging.log4j.test">
-    <Filter type="ThresholdFilter" level="trace" />
+<Configuration status="WARN">
+
+    <Properties>
+        <property name="pattern_file">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{5} - %msg%n</property>
+    </Properties>
 
     <Appenders>
-        <Console name="STDOUT">
-            <Layout type="PatternLayout" pattern="%m %n" />
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %logger{1} - %msg%n"/>
         </Console>
-        <RollingFile name="rollingFile"
-                     fileName="logs/log4j2.log"
-                     filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
-            <PatternLayout>
-                <Pattern>%d %p %c{10} [%t] %m%n</Pattern>
-            </PatternLayout>
+
+        <RollingFile name="FileRolling" filename="D:/eclipse_workplace/epam-project/logs/logs.log" append="true"
+                     filePattern="D:/eclipse_workplace/epam-project/logs/${date:yyyy-MM-dd}/%d{yyyy-MM-dd_HH-mm}_%i.log">
+            <PatternLayout pattern="${pattern_file}"/>
             <Policies>
-                <TimeBasedTriggeringPolicy interval = "1" />
-                <SizeBasedTriggeringPolicy
-                        size="50 KB" />
+                <SizeBasedTriggeringPolicy size="15 KB"/>
             </Policies>
         </RollingFile>
     </Appenders>
 
     <Loggers>
-        <Root level="INFO">
-            <AppenderRef ref="STDOUT" />
-            <AppenderRef ref="rollingFile" />
+        <Logger name="Log_Console" level="debug" additivity="true">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="Rolling_File" level="debug" additivity="false">
+            <AppenderRef ref="FileRolling"/>
+        </Logger>
+
+        <Root level="all">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileRolling"/>
         </Root>
     </Loggers>
-
 </Configuration>

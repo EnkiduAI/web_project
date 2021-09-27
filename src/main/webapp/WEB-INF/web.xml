@@ -10,6 +10,7 @@ xmlns="http://xmlns.jcp.org/xml/ns/javaee">
 	<listener-class>com.epam.web.controller.listner.SessionListnerImpl</listener-class>
 </listener>
 
+
 <error-page>
 
 <exception-type>java.lang.Throwable</exception-type>
