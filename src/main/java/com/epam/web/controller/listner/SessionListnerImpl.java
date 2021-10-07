@@ -1,6 +1,6 @@
 package com.epam.web.controller.listner;
 
-import com.epam.web.command.ParameterProvider;
+import static com.epam.web.command.ParameterProvider.*;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
@@ -19,8 +19,9 @@ public class SessionListnerImpl implements HttpSessionListener {
     @Override
     public void sessionCreated(HttpSessionEvent sessionEvent) {
         HttpSession session = sessionEvent.getSession();
-        session.setAttribute(ParameterProvider.CURRENT_LOCALE, DEFAULT_LOCALE);
-        session.setAttribute(ParameterProvider.CURRENT_BUNDLE, DEFAULT_BUNDLE);
-        session.setAttribute(ParameterProvider.SECOND_LOCALE, SECOND_LOCALE);
+        session.setAttribute(CURRENT_LOCALE, DEFAULT_LOCALE);
+        session.setAttribute(CURRENT_BUNDLE, DEFAULT_BUNDLE);
+        session.setAttribute(SECOND_LOCALE, SECOND_LOCALE);
+        //session.setAttribute(USER_LOGIN, null);
     }
 }

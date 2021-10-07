@@ -1,14 +1,14 @@
 package com.epam.web.entity;
 
 import java.sql.Date;
-import java.util.Arrays;
+
 
 public class ApplicationEntity extends Entity {
 	private int applicationId;
 	private int statusId;
 	private int applicantId;
 	private int typeId;
-	private byte[] photo;
+	private String photo;
 	private String name;
 	private String surname;
 	private String traits;
@@ -22,7 +22,7 @@ public class ApplicationEntity extends Entity {
 	}
 
 	public ApplicationEntity(int applicationId, int statusId, int applicantId, 
-		    int typeId, byte[] photo, 
+		    int typeId, String photo, 
 			String name, String surname, String traits, int weight, int height, String description, 
 			int reward, Date expirationDate) {
 		this.applicationId = applicationId;
@@ -66,10 +66,10 @@ public class ApplicationEntity extends Entity {
 		this.typeId = typeId;
 	}
 	
-	public byte[] getPhoto() {
+	public String getPhoto() {
 		return photo;
 	}
-	public void setPhoto(byte[] photo) {
+	public void setPhoto(String photo) {
 		this.photo = photo;
 	}
 	public String getName() {
@@ -135,7 +135,7 @@ public class ApplicationEntity extends Entity {
 		result = prime * result + ((expirationDate == null) ? 0 : expirationDate.hashCode());
 		result = prime * result + height;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + Arrays.hashCode(photo);
+		result = prime * result + ((photo == null) ? 0 : photo.hashCode());
 		result = prime * result + reward;
 		result = prime * result + statusId;
 		result = prime * result + ((surname == null) ? 0 : surname.hashCode());
@@ -175,7 +175,7 @@ public class ApplicationEntity extends Entity {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (!Arrays.equals(photo, other.photo))
+		if (!photo.equals(other.photo))
 			return false;
 		if (reward != other.reward)
 			return false;
@@ -258,7 +258,7 @@ public static class ApplicationBuilder{
 		return this;
 	}
 	
-	public ApplicationBuilder setPhoto(byte[] photo){
+	public ApplicationBuilder setPhoto(String photo){
 		application.setPhoto(photo);
 		return this;
 	}

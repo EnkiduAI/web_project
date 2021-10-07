@@ -5,8 +5,8 @@ public class UserValidator {
 	private static final String SURNAME_REGEX = "^[a-zA-ZА-Яа-я]{5,15}$";
 	private static final String LOGIN_REGEX = "^[A-Za-z0-9_]{5,17}$";
 	private static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$";
-	private static final String EMAIL_REGEX = "^(?=.{3,30}$)[^\\\\s]+@[^\\\\s]+\\\\.[^\\\\s]+$";
-	private static final String PHONE_REGEX = "^\\\\+\\\\d{12}$";
+	private static final String EMAIL_REGEX = "^(.+)@(.+)$";
+	private static final String PHONE_REGEX = "^[0-9\\+]{1,}[0-9\\-]{3,15}$";
 	
 	private static UserValidator instance = new UserValidator();
 	

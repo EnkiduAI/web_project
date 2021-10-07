@@ -140,7 +140,7 @@ public class ApplicantDaoImpl implements ApplicantDao{
 	}
 
 	@Override
-	public ApplicantEntity update(ApplicantEntity t) throws DaoException {
+	public void update(ApplicantEntity t) throws DaoException {
 		ApplicantEntity applicant = new ApplicantEntity();
 		applicant = findById(t.getId());
 		try (Connection connection = connectionPool.getConnection();
@@ -156,7 +156,7 @@ public class ApplicantDaoImpl implements ApplicantDao{
 			logger.error("Problem at update method at ApplicantDaoImpl", e);
 			throw new DaoException("error occured during update at ApplicantDaoImpl");
 		}
-		return applicant;
+		
 	}
 
 	@Override

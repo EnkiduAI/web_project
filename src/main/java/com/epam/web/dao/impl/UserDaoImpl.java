@@ -134,13 +134,13 @@ public class UserDaoImpl implements UserDao{
 		int result = 0;
 		try(Connection connection = connectionPool.getConnection();
 				PreparedStatement statement = connection.prepareStatement(SQL_CREATE_USER)) {
-			statement.setInt(1, t.getUserId());
-			statement.setString(2, t.getName());
-			statement.setString(3, t.getSurname());
-			statement.setString(4, t.getLogin());
-			statement.setString(5, t.getPassword());
-			statement.setString(6, t.getEmail());
-			statement.setString(7, t.getPhone());
+			
+			statement.setString(1, t.getName());
+			statement.setString(2, t.getSurname());
+			statement.setString(3, t.getLogin());
+			statement.setString(4, t.getPassword());
+			statement.setString(5, t.getEmail());
+			statement.setString(6, t.getPhone());
 			result = statement.executeUpdate();
 		}catch(SQLException e) {
 			logger.error("Problem at create method at UserDaoImpl", e);
@@ -150,7 +150,7 @@ public class UserDaoImpl implements UserDao{
 	}
 
 	@Override
-	public UserEntity update(UserEntity t) throws DaoException {
+	public void update(UserEntity t) throws DaoException {
 		UserEntity user = new UserEntity();
 		user = findById(t.getUserId());
 		try(Connection connection = connectionPool.getConnection();
@@ -166,7 +166,7 @@ public class UserDaoImpl implements UserDao{
 			logger.error("Problem at update method at UserDaoImpl", e);
 			throw new DaoException("update failed at UserDaoImpl", e);
 		}
-		return user;
+		
 	}
 
 	@Override

@@ -146,7 +146,7 @@ private static final String SQL_FIND_BY_APPLICANT_ID = """
 	}
 
 	@Override
-	public ClosedApplicationEntity update(ClosedApplicationEntity t) throws DaoException {
+	public void update(ClosedApplicationEntity t) throws DaoException {
 		ClosedApplicationEntity closedApplication = new ClosedApplicationEntity();
 		closedApplication = findById(t.getClosedApplicationId());
 		try (Connection connection = connectionPool.getConnection();
@@ -160,7 +160,7 @@ private static final String SQL_FIND_BY_APPLICANT_ID = """
 			logger.error("Problem at update method at ClosedApplicationDaoImpl", e);
 			throw new DaoException("update failed at ClosedApplicationDaoImpl", e);
 		}
-		return closedApplication;
+		
 	}
 
 	@Override

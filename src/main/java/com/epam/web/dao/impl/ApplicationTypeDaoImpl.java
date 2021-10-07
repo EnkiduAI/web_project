@@ -112,7 +112,7 @@ public class ApplicationTypeDaoImpl implements ApplicationTypeDao{
 	}
 
 	@Override
-	public ApplicationTypeEntity update(ApplicationTypeEntity t) throws DaoException {
+	public void update(ApplicationTypeEntity t) throws DaoException {
 		ApplicationTypeEntity type = new ApplicationTypeEntity();
 		type = findById(t.getId());
 		try(Connection connection = connectionPool.getConnection();
@@ -123,7 +123,7 @@ public class ApplicationTypeDaoImpl implements ApplicationTypeDao{
 			logger.error("Problem at update method at ApplicationTypeDaoImpl", e);
 			throw new DaoException("error occured during update at ApplicantDaoImpl");
 		}
-		return type;
+		
 	}
 
 	@Override

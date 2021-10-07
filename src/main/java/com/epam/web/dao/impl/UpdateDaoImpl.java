@@ -138,7 +138,7 @@ public class UpdateDaoImpl implements UpdateDao{
 	}
 
 	@Override
-	public UpdateEntity update(UpdateEntity t) throws DaoException {
+	public void update(UpdateEntity t) throws DaoException {
 		UpdateEntity update = new UpdateEntity();
 		update = findById(t.getMessageId());
 		try(Connection connection = connectionPool.getConnection();
@@ -152,7 +152,7 @@ public class UpdateDaoImpl implements UpdateDao{
 			logger.error("Problem at update method at UpdateDaoImpl", e);
 			throw new DaoException("update failed at UpdateDaoImpl", e);
 		}
-		return update;
+		
 	}
 
 	@Override

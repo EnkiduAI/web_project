@@ -128,7 +128,7 @@ private static final String SQL_FIND_BY_STATUS = """
 	}
 
 	@Override
-	public StatusEntity update(StatusEntity t) throws DaoException {
+	public void update(StatusEntity t) throws DaoException {
 		StatusEntity status = new StatusEntity();
 		status = findById(t.getStatusId());
 		try(Connection connection = connectionPool.getConnection();
@@ -140,7 +140,7 @@ private static final String SQL_FIND_BY_STATUS = """
 			logger.error("Problem at update method at StatusDaoImpl", e);
 			throw new DaoException("update failed at StatusDaoImpl", e);
 		}
-		return status;
+		
 	}
 
 	@Override
