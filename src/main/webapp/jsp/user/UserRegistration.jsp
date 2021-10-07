@@ -19,34 +19,36 @@
             <div class="mb-3">
                 <h3>Registration form</h3>
             </div>
-            <form accept="" class="shadow p-4">                  
+            <form name="registrationForm" method="post" action="controller" accept="" class="shadow p-4">  
+            <input type="hidden" name="command" value="REGISTER_USER"/>   
+            <input type="hidden" name="current_page" value="${pageContext.request.requestURL}">             
                 <div class="mb-3">
-                    <label for="username">Email</label>
+                    <label for="email">Email</label>
                     <input type="email" class="form-control" name="email" id="email" placeholder="email">
                 </div>
                 
                 <div class="mb-3">
-                    <label for="username">Name</label>
+                    <label for="name">Name</label>
                     <input type="text" class="form-control" name="name" id="name" placeholder="Name">
                 </div>
                 
                 <div class="mb-3">
-                    <label for="username">Surname</label>
+                    <label for="surname">Surname</label>
                     <input type="text" class="form-control" name="surname" id="surname" placeholder="Surname">
                 </div>
                 
                 <div class="mb-3">
-                    <label for="username">Login</label>
+                    <label for="login">Login</label>
                     <input type="text" class="form-control" name="login" id="login" placeholder="Login">
                 </div>
 
                 <div class="mb-3">
-                    <label for="Password">Password</label>
+                    <label for="password">Password</label>
                     <input type="password" class="form-control" name="password" id="Password" placeholder="Password">
                 </div>
                 
                 <div class="mb-3">
-                    <label for="username">Phone</label>
+                    <label for="phone">Phone</label>
                     <input type="text" class="form-control" name="phone" id="phone" placeholder="Phone">
                 </div>
 

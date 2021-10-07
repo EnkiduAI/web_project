@@ -23,19 +23,35 @@
         <h1 class="fw-light">${wanted}</h1>
         <p class="lead text-muted">${description}</p>
 <div class="container">
-  <div class="row">
-    <div class="col-12">
-		<table class="table table-image">
+  <div class="row justify-content-center">
+    <div class="col-12" >
+		<table class="table table-borderless-xl">
 		  <thead>
 		    <tr>
-		      <th scope="col">Day</th>
-		      <th scope="col">Image</th>
-		      <th scope="col">Article Name</th>
-		      <th scope="col">Author</th>
-		      <th scope="col">Words</th>
-		      <th scope="col">Shares</th>
+		      <th scope="col">Photo</th>
+		      <th scope="col">Name</th>
+		      <th scope="col">Surname</th>
+		      <th scope="col">Traits</th>
+		      <th scope="col">Weight</th>
+		      <th scope="col">Height</th>
+		      <th scope="col">Description</th>
+		      <th scope="col">Reward</th>
+		      <th scope="col">Expiration date</th>
 		    </tr>
 		  </thead>
+		  <c:forEach items="${applicationList}" var="unposted">
+                        <tr>
+                            <td><img id="wanted_image" src="image/wanted/${unposted.getPhoto()}" width="70" height="70"/></td>
+                            <td>${unposted.getName()}</td>
+                            <td>${unposted.getSurname()}</td>
+                            <td>${unposted.getTraits()}</td>
+                            <td>${unposted.getWeight()}</td>
+                            <td>${unposted.getHeight()}</td>
+                            <td>${unposted.getDescription()}</td>
+                            <td>${unposted.getReward()}</td>
+                            <td>${unposted.getExpirationDate()}</td>
+                        </tr>
+                    </c:forEach>
 		  </table>
 		  </div>
 		  </div>
