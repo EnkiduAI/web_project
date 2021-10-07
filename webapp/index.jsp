@@ -1,6 +1,6 @@
 <%@ page contentType = "text/html; charset = UTF-8" pageEncoding="UTF-8" %>
 <html>
 <body>
-<jsp:forward page="/jsp/mainPage.jsp"/>
+<jsp:forward page="/controller?command=GO_TO_MAIN"/>
 </body>
 </html>
