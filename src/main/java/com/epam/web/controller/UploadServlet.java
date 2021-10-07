@@ -42,7 +42,7 @@ public class UploadServlet extends HttpServlet{
 		try {
 			Part filePart = request.getPart("fileToUpload");
 			InputStream fileInputStream = filePart.getInputStream();
-			File fileToSave = new File("D:/eclipse_workplace/epam-project/src/main/webapp/image/wanted/" + filePart.getSubmittedFileName());
+			File fileToSave = new File(DESTINATION + filePart.getSubmittedFileName());
 			Files.copy(fileInputStream, fileToSave.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			application.setPhoto(filePart.getSubmittedFileName());
 			logger.info(application.getPhoto());
