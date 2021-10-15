@@ -12,25 +12,31 @@ import static com.epam.web.command.PagePath.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-public class GoToEditApplicationCommandImpl implements Command{
+
+public class GoToEditApplicationCommandImpl implements Command {
 	private static final Logger logger = LogManager.getLogger();
-AdminServiceImpl service = AdminServiceImpl.getInstance();
+	AdminServiceImpl service = AdminServiceImpl.getInstance();
+
 	@Override
 	public String execute(HttpServletRequest request) {
-		String page = EDIT_APPLICATION;
 		HttpSession session = request.getSession();
-		
-		  int id = Integer.parseInt(request.getParameter(APPLICATION_ID));
-		  ApplicationEntity application = new ApplicationEntity(); 
-		  try { 
-			  application = service.findById(id); 
-			  session.setAttribute(CURRENT_APPLICATION, application);
-		  }catch (ServiceException e) { 
-			  logger.error(e); 
-			  }
-		 
-		
-		return page;
+		if (session.getAttribute(ROLE).equals("admin")) {
+			String page = EDIT_APPLICATION;
+
+			int id = Integer.parseInt(request.getParameter(APPLICATION_ID));
+			ApplicationEntity application = new ApplicationEntity();
+			try {
+				application = service.findById(id);
+				session.setAttribute(CURRENT_APPLICATION, application);
+
+			} catch (ServiceException e) {
+				logger.error(e);
+			}
+			return page;
+		} else {
+			return MAIN_PAGE;
+		}
+
 	}
 
 }

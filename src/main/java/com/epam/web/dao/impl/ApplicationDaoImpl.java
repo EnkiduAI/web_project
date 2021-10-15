@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package com.epam.web.dao.impl;
 
 
@@ -17,19 +20,38 @@ import com.epam.web.entity.ApplicationEntity;
 import com.epam.web.exception.DaoException;
 import static com.epam.web.dao.TableColumns.*;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ApplicationDaoImpl.
+ */
 public class ApplicationDaoImpl implements ApplicationDao{
+	
+	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger();
+	
+	/** The instance. */
 	private static ApplicationDaoImpl instance = new ApplicationDaoImpl();
+	
+	/** The connection pool. */
 	private ConnectionPool connectionPool = ConnectionPool.getInstance();
 	
+	/**
+	 * Instantiates a new application dao impl.
+	 */
 	private ApplicationDaoImpl() {
 		
 	}
 	
+	/**
+	 * Gets the single instance of ApplicationDaoImpl.
+	 *
+	 * @return single instance of ApplicationDaoImpl
+	 */
 	public static ApplicationDaoImpl getInstance() {
 		return instance;
 	}
 	
+	/** The Constant SQL_FIND_ALL. */
 	private static final String SQL_FIND_ALL = """
 			SELECT 
 			applications.applicationId,
@@ -48,6 +70,8 @@ public class ApplicationDaoImpl implements ApplicationDao{
 			FROM
 		    mydb.applications;
 			""";
+	
+	/** The Constant SQL_FIND_BY_ID. */
 	private static final String SQL_FIND_BY_ID = """
 			SELECT 
 			applications.applicationId,
@@ -67,9 +91,13 @@ public class ApplicationDaoImpl implements ApplicationDao{
 		    mydb.applications
 		    where applications.applicationId = ?;
 			""";
+	
+	/** The Constant SQL_DELETE_BY_ID. */
 	private static final String SQL_DELETE_BY_ID = """ 
 			delete from mydb.applications where applications.applicationId = ?
 			""";
+	
+	/** The Constant SQL_INSERT_APPLICATION. */
 	private static final String SQL_INSERT_APPLICATION = """
 			insert into mydb.applicants
 			(applications.applicationId,
@@ -87,6 +115,8 @@ public class ApplicationDaoImpl implements ApplicationDao{
 		    applications.expirationDate) 
 		    values(NULL,?,?,?,?,?,?,?,?,?,?,?,?)
 			""";
+	
+	/** The Constant SQL_UPDATE_APPLICATION. */
 	private static final String SQL_UPDATE_APPLICATION = """
 			update mydb.applications set
 			applications.statusId = ?,
@@ -100,8 +130,11 @@ public class ApplicationDaoImpl implements ApplicationDao{
 		    applications.height = ?,
 		    applications.description = ?,
 		    applications.reward = ?,
-		    applications.expirationDate = ?;
+		    applications.expirationDate = ?
+		    where applications.applicationId = ?;
 			""";
+	
+	/** The Constant SQL_FIND_BY_STATUS. */
 	private static final String SQL_FIND_BY_STATUS = """
 			SELECT 
 applications.applicationId,
@@ -121,6 +154,8 @@ FROM mydb.applications
 join mydb.status as st on st.statusId = applications.statusId
 where st.status = ?;
 			""";
+	
+	/** The Constant SQL_FIND_BY_ORGANIZATION_NAME. */
 	private static final String SQL_FIND_BY_ORGANIZATION_NAME = """
 			SELECT 
 			applications.applicationId,
@@ -138,8 +173,11 @@ where st.status = ?;
 		    applications.expirationDate
 			FROM
 		    mydb.applications
-		    where applications.organizationName = ?;
+		    join mydb.applicants as ap on ap.applicantId = applications.applicantId
+		    where ap.organizationName = ?;
 			""";
+	
+	/** The Constant SQL_FIND_UNPOSTED. */
 	private static final String SQL_FIND_UNPOSTED = """
 			SELECT
 applications.applicationId,
@@ -159,7 +197,36 @@ FROM mydb.applications
 JOIN mydb.status as st on applications.statusId = st.statusId
 WHERE st.status != "POSTED";
 			""";
+	
+	/** The Constant SQL_FIND_POSTED. */
+	private static final String SQL_FIND_POSTED = """
+			SELECT
+applications.applicationId,
+applications.statusId,
+applications.applicantId,
+applications.typeId,
+applications.photo,
+applications.name,
+applications.surname,
+applications.traits,
+applications.weight,
+applications.height,
+applications.description,
+applications.reward,
+applications.expirationDate
+FROM mydb.applications
+JOIN mydb.status as st on applications.statusId = st.statusId
+WHERE st.status = "POSTED";
+			""";
+	
+	
 
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public List<ApplicationEntity> findAll() throws DaoException {
 		List<ApplicationEntity> applications = new ArrayList<>();
@@ -177,6 +244,13 @@ WHERE st.status != "POSTED";
 		return applications;
 	}
 
+	/**
+	 * Find by id.
+	 *
+	 * @param id the id
+	 * @return the application entity
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public ApplicationEntity findById(Integer id) throws DaoException {
 		ApplicationEntity applicationAtFindById = new ApplicationEntity();
@@ -194,6 +268,13 @@ WHERE st.status != "POSTED";
 		return applicationAtFindById;
 	}
 
+	/**
+	 * Delete.
+	 *
+	 * @param id the id
+	 * @return true, if successful
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public boolean delete(Integer id) throws DaoException {
 		int result = 0;
@@ -208,6 +289,13 @@ WHERE st.status != "POSTED";
 		return result>0;
 	}
 
+	/**
+	 * Delete.
+	 *
+	 * @param t the t
+	 * @return true, if successful
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public boolean delete(ApplicationEntity t) throws DaoException {
 		int result = 0;
@@ -223,6 +311,13 @@ WHERE st.status != "POSTED";
 		return result>0;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param t the t
+	 * @return true, if successful
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public boolean create(ApplicationEntity t) throws DaoException {
 		int result = 0;
@@ -249,6 +344,12 @@ WHERE st.status != "POSTED";
 		return result>0;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param t the t
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public void update(ApplicationEntity t) throws DaoException {
 		ApplicationEntity application = new ApplicationEntity();
@@ -267,6 +368,7 @@ WHERE st.status != "POSTED";
 			statement.setString(10, t.getDescription());
 			statement.setInt(11, t.getReward());
 			statement.setDate(12, t.getExpirationDate());
+			statement.setInt(13, t.getApplicationId());
 			statement.executeUpdate();
 		}catch(SQLException e) {
 			logger.error("Problem at update method at ApplicationDaoImpl", e);
@@ -275,6 +377,13 @@ WHERE st.status != "POSTED";
 		
 	}
 
+	/**
+	 * Findby status.
+	 *
+	 * @param status the status
+	 * @return the list
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public List<ApplicationEntity> findbyStatus(String status) throws DaoException {
 		List<ApplicationEntity> applicationAtFindByStatus = new ArrayList<>();
@@ -293,12 +402,19 @@ WHERE st.status != "POSTED";
 		return applicationAtFindByStatus;
 	}
 
+	/**
+	 * Findby organization name.
+	 *
+	 * @param organizationName the organization name
+	 * @return the list
+	 * @throws DaoException the dao exception
+	 */
 	@Override
-	public List<ApplicationEntity> findbyOrganizationName(int organizationName) throws DaoException {
+	public List<ApplicationEntity> findbyOrganizationName(String organizationName) throws DaoException {
 		List<ApplicationEntity> applicationAtFindByOrganizationName = new ArrayList<>();
 		try(Connection connection = connectionPool.getConnection();
 				PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_ORGANIZATION_NAME)){			
-			statement.setInt(1, organizationName);
+			statement.setString(1, organizationName);
 			ResultSet resultSet = statement.executeQuery();
 			while(resultSet.next()) {
 				ApplicationEntity application = buildApplication(resultSet);
@@ -311,6 +427,12 @@ WHERE st.status != "POSTED";
 		return applicationAtFindByOrganizationName;
 	}
 
+	/**
+	 * Find unposted.
+	 *
+	 * @return the list
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public List<ApplicationEntity> findUnposted() throws DaoException {
 		List<ApplicationEntity> applications = new ArrayList<>();
@@ -328,6 +450,36 @@ WHERE st.status != "POSTED";
 		return applications;
 	}
 	
+	/**
+	 * Find posted.
+	 *
+	 * @return the list
+	 * @throws DaoException the dao exception
+	 */
+	@Override
+	public List<ApplicationEntity> findPosted() throws DaoException {
+		List<ApplicationEntity> applications = new ArrayList<>();
+		try(Connection connection = connectionPool.getConnection();
+				PreparedStatement statement = connection.prepareStatement(SQL_FIND_POSTED)) {
+			ResultSet resultSet = statement.executeQuery();
+			while(resultSet.next()) {
+				ApplicationEntity application = buildApplication(resultSet);				
+				applications.add(application);
+			}
+		}catch (SQLException e) {
+			logger.error("Problem at findUnpodted method at ApplicationDaoImpl", e);
+			throw new DaoException("error ocurred at findUnpodted: ApplicationDaoImpl", e);
+		}
+		return applications;
+	}
+	
+	/**
+	 * Builds the application.
+	 *
+	 * @param resultSet the result set
+	 * @return the application entity
+	 * @throws SQLException the SQL exception
+	 */
 	private ApplicationEntity buildApplication(ResultSet resultSet) throws SQLException{
 		ApplicationEntity application = new ApplicationEntity.ApplicationBuilder()
 				.setApplicationId(resultSet.getInt(APPLICATION_ID))
@@ -346,6 +498,8 @@ WHERE st.status != "POSTED";
 				.build();
 		return application;
 	}
+
+	
 
 	
 }

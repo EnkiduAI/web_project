@@ -38,6 +38,21 @@ public static final String APPLICATION_HEIGHT = "height";
 public static final String APPLICATION_DESCRIPTION = "description";
 public static final String APPLICATION_REWARD = "reward";
 public static final String APPLICATION_EXPDATE = "expdate";
+
+//status
+public static final String STATUS_POSTED = "POSTED";
+public static final String STATUS_VERIFYING = "VERIFYING";
+
+//applicants
+public static final String APPLICANTS_LIST = "applicantsList";
+public static final String APPLICANT_NAME = "organization";
+public static final String APPLICANT_LIST_NAMES = "applicantNames";
+
+//types
+public static final String TYPES_LIST = "typesList";
+
+//miscellaneous
+public static final String ORGANIZATION_SELECTED = "selectedName";
 private ParameterProvider() {
 	
 }

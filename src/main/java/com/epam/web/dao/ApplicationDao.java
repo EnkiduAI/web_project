@@ -7,6 +7,7 @@ import com.epam.web.exception.DaoException;
 
 public interface ApplicationDao extends BaseDao<Integer, ApplicationEntity>{
 List<ApplicationEntity> findbyStatus(String status) throws DaoException;
-List<ApplicationEntity> findbyOrganizationName(int name) throws DaoException;
+List<ApplicationEntity> findbyOrganizationName(String name) throws DaoException;
 List<ApplicationEntity> findUnposted() throws DaoException;
+List<ApplicationEntity> findPosted() throws DaoException;
 }

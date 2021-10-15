@@ -1,6 +1,6 @@
 package com.epam.web.command.impl.admin;
 
-import static com.epam.web.command.PagePath.*;
+
 import static com.epam.web.command.ParameterProvider.*;
 
 import java.sql.Date;
@@ -15,15 +15,16 @@ import com.epam.web.service.impl.AdminServiceImpl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-
+import static com.epam.web.command.PagePath.*;
 
 public class UpadateApplicationCommandImpl implements Command {
 private static final Logger logger = LogManager.getLogger();
-AdminServiceImpl service = AdminServiceImpl.getInstance();
+private AdminServiceImpl service = AdminServiceImpl.getInstance();
+private GoToAdminMainPageImpl goToMain = new GoToAdminMainPageImpl();
 	@Override
 	public String execute(HttpServletRequest request) {
-		String page = MAIN_ADMIN;
-		HttpSession session = request.getSession();		
+		HttpSession session = request.getSession();
+		if (session.getAttribute(ROLE).equals("admin")) {
 		try {
 			ApplicationEntity application = (ApplicationEntity) session.getAttribute(CURRENT_APPLICATION);
 			application.setName(request.getParameter(APPLICATION_NAME));
@@ -33,13 +34,16 @@ AdminServiceImpl service = AdminServiceImpl.getInstance();
 			application.setWeight(Integer.parseInt(request.getParameter(APPLICATION_WEIGHT)));
 			application.setDescription(request.getParameter(APPLICATION_DESCRIPTION));
 			application.setReward(Integer.parseInt(request.getParameter(APPLICATION_REWARD)));
-			
+			application.setExpirationDate(Date.valueOf(request.getParameter(APPLICATION_EXPDATE)));
 			service.updateApplication(application);
-			return page;
+			return goToMain.execute(request);
 		} catch (ServiceException e) {
 			logger.error("Application not updated",e);
 		}
-		return page;
+		return goToMain.execute(request);
+		}else {
+			return MAIN_PAGE;
+		}
 	}
 
 }

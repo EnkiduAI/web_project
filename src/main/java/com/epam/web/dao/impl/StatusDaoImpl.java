@@ -144,21 +144,20 @@ private static final String SQL_FIND_BY_STATUS = """
 	}
 
 	@Override
-	public List<StatusEntity> findByStatus(String status) throws DaoException {
-		List<StatusEntity> statusList = new ArrayList<>();
+	public StatusEntity findByStatus(String status) throws DaoException {
+		StatusEntity statusMatch = new StatusEntity();
 		try (Connection connection = connectionPool.getConnection();
 				PreparedStatement statement = connection.prepareStatement(SQL_FIND_BY_STATUS)){			
 			statement.setString(1, status);
 			ResultSet resultSet = statement.executeQuery();
 			while(resultSet.next()) {	
-				StatusEntity statusMatch = buildStatus(resultSet);
-				statusList.add(statusMatch);
+				statusMatch = buildStatus(resultSet);
 			}	
 			}catch(SQLException e) {
 				logger.error("Problem at findByStatus method at StatusDaoImpl", e);
 				throw new DaoException("problem at StatusDao: findByStatus", e);
 			}	
-		return statusList;
+		return statusMatch;
 	}
 	
 	private StatusEntity buildStatus(ResultSet resultSet) throws SQLException{
