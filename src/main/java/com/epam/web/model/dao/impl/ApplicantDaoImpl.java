@@ -18,49 +18,86 @@ import com.epam.web.model.dao.ApplicantDao;
 import com.epam.web.model.entity.Applicant;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ApplicantDaoImpl.
+ */
 public class ApplicantDaoImpl implements ApplicantDao{
+	
+	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger();
+	
+	/** The instance. */
 	private static ApplicantDaoImpl instance = new ApplicantDaoImpl();
+	
+	/** The connection pool. */
 	private ConnectionPool connectionPool = ConnectionPool.getInstance();
 	
 	
+	/**
+	 * Instantiates a new applicant dao impl.
+	 */
 	private ApplicantDaoImpl() {
 		
 	}
 	
+	/**
+	 * Gets the single instance of ApplicantDaoImpl.
+	 *
+	 * @return single instance of ApplicantDaoImpl
+	 */
 	public static ApplicantDaoImpl getInstance() {
 		return instance;
 	}
 	
+	/** The Constant SQL_SELECT_ORGANIZATION_BY_NAME. */
 	private static final String SQL_SELECT_ORGANIZATION_BY_NAME = """
 			select applicantId, organizationName, login, password, email, phone 
 			from applicants
 			where organizationName = ?
 			""";
+	
+	/** The Constant SQL_SELECT_ORGANIZATION_BY_LOGIN. */
 	private static final String SQL_SELECT_ORGANIZATION_BY_LOGIN = """
 			select applicantId, organizationName, login, password, email, phone 
 			from applicants
 			where login = ?
 			""";
+	
+	/** The Constant SQL_SELECT_ALL_APPLICANTS. */
 	private static final String SQL_SELECT_ALL_APPLICANTS = """ 
 			select applicantId, organizationName, login, password, phone, email 
 			from applicants
 			""";
+	
+	/** The Constant SQL_DELETE_BY_ID. */
 	private static final String SQL_DELETE_BY_ID = """ 
 			delete from applicants where applicantId = ?
 			""";
+	
+	/** The Constant SQL_FIND_BY_ID. */
 	private static final String SQL_FIND_BY_ID = """
 			select applicantId, organizationName, login, password, email, phone from applicants
 			where applicantId = ?
 			""";
+	
+	/** The Constant SQL_INSERT_APPLICANT. */
 	private static final String SQL_INSERT_APPLICANT = """
 			insert into applicants(applicantId, organizationName, login, password, email, phone) values(NULL,?,?,?,?,?)
 			""";
+	
+	/** The Constant SQL_UPDATE_APPLICANT. */
 	private static final String SQL_UPDATE_APPLICANT = """
 			update applicants set  organizationName = ?, login = ?, password = ?, email = ?, phone = ?
 			where applicantId = ?
 			""";
 
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public List<Applicant> findAll() throws DaoException{
 		List<Applicant> applicants = new ArrayList<>();	
@@ -79,6 +116,13 @@ public class ApplicantDaoImpl implements ApplicantDao{
 		return applicants;
 	}
 
+	/**
+	 * Find by id.
+	 *
+	 * @param id the id
+	 * @return the applicant
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public Applicant findById(Integer id) throws DaoException {
 		
@@ -98,6 +142,13 @@ public class ApplicantDaoImpl implements ApplicantDao{
 		return applicant;
 	}
 
+	/**
+	 * Delete.
+	 *
+	 * @param id the id
+	 * @return true, if successful
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public boolean delete(Integer id) throws DaoException {
 		int result = 0;
@@ -112,12 +163,19 @@ public class ApplicantDaoImpl implements ApplicantDao{
 		return result>0;
 	}
 
+	/**
+	 * Delete.
+	 *
+	 * @param t the t
+	 * @return true, if successful
+	 * @throws DaoException the dao exception
+	 */
 	@Override
-	public boolean delete(Applicant t) throws DaoException {
+	public boolean delete(Applicant applicant) throws DaoException {
 		int result = 0;
 		try (Connection connection = connectionPool.getConnection();
 				PreparedStatement statement = connection.prepareStatement(SQL_DELETE_BY_ID)){
-			statement.setInt(1, t.getId());
+			statement.setInt(1, applicant.getId());
 			result = statement.executeUpdate();
 		}catch(SQLException e) {
 			logger.error("Problem at delete(ENTITY) method at ApplicantDaoImpl", e);
@@ -126,16 +184,23 @@ public class ApplicantDaoImpl implements ApplicantDao{
 		return result>0;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param t the t
+	 * @return true, if successful
+	 * @throws DaoException the dao exception
+	 */
 	@Override
-	public boolean create(Applicant t) throws DaoException {
+	public boolean create(Applicant applicant) throws DaoException {
 		int result = 0;
 		try(Connection connection = connectionPool.getConnection();
 				PreparedStatement statement = connection.prepareStatement(SQL_INSERT_APPLICANT)) {			
-			statement.setString(1, t.getOrganizationName());
-			statement.setString(2, t.getLogin());
-			statement.setString(3, t.getPassword());
-			statement.setString(4, t.getEmail());
-			statement.setString(5, t.getPhone());
+			statement.setString(1, applicant.getOrganizationName());
+			statement.setString(2, applicant.getLogin());
+			statement.setString(3, applicant.getPassword());
+			statement.setString(4, applicant.getEmail());
+			statement.setString(5, applicant.getPhone());
 			result = statement.executeUpdate();
 		}catch(SQLException e) {
 			logger.error("Problem at create method at ApplicantDaoImpl", e);
@@ -144,6 +209,12 @@ public class ApplicantDaoImpl implements ApplicantDao{
 		return result>0;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param applicant the applicant
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public void update(Applicant applicant) throws DaoException {	
 		try (Connection connection = connectionPool.getConnection();
@@ -162,6 +233,13 @@ public class ApplicantDaoImpl implements ApplicantDao{
 		
 	}
 
+	/**
+	 * Find by organization name.
+	 *
+	 * @param name the name
+	 * @return the applicant
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public Applicant findByOrganizationName(String name) throws DaoException{
 		Applicant applicant = new Applicant();
@@ -179,6 +257,13 @@ public class ApplicantDaoImpl implements ApplicantDao{
 		return applicant;
 	}
 	
+	/**
+	 * Find organization by login.
+	 *
+	 * @param login the login
+	 * @return the applicant
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public Applicant findOrganizationByLogin(String login) throws DaoException {
 		Applicant applicant = new Applicant();
@@ -196,8 +281,15 @@ public class ApplicantDaoImpl implements ApplicantDao{
 		return applicant;
 	}
 
+	/**
+	 * Builds the applicant.
+	 *
+	 * @param resultSet the result set
+	 * @return the applicant
+	 * @throws SQLException the SQL exception
+	 */
 	private Applicant buildApplicant(ResultSet resultSet) throws SQLException{
-		Applicant applicant = new Applicant.ApplicantBuilder()
+		return new Applicant.ApplicantBuilder()
 				.setId(resultSet.getInt(APPLICANT_ID))
 				.setOrganizationName(resultSet.getString(ORGANIZATION_NAME))
 				.setLogin(resultSet.getString(APPLICANT_LOGIN))
@@ -205,7 +297,7 @@ public class ApplicantDaoImpl implements ApplicantDao{
 				.setEmail(resultSet.getString(APPLICANT_EMAIL))
 				.setPhone(resultSet.getString(APPLICANT_PHONE))
 				.build();
-		return applicant;
+		 
 	}
 
 	

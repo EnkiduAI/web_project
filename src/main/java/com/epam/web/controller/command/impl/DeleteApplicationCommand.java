@@ -17,9 +17,6 @@ import static com.epam.web.controller.command.PagePath.*;
 
 public class DeleteApplicationCommand implements Command {
 	private static final Logger logger = LogManager.getLogger();
-	
-	
-
 	@Override
 	public String execute(HttpServletRequest request) {
 

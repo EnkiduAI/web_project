@@ -2,7 +2,6 @@ package com.epam.web.model.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,55 +10,45 @@ import com.epam.web.exception.DaoException;
 import com.epam.web.exception.ServiceException;
 import com.epam.web.model.dao.impl.ApplicantDaoImpl;
 import com.epam.web.model.dao.impl.ApplicationDaoImpl;
-import com.epam.web.model.dao.impl.UserDaoImpl;
 import com.epam.web.model.entity.Applicant;
 import com.epam.web.model.entity.Application;
-import com.epam.web.model.entity.User;
 import com.epam.web.model.service.UserService;
-import com.epam.web.model.util.security.PasswordEncryptor;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class UserServiceImpl.
+ */
 public class UserServiceImpl implements UserService {
+	
+	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger();
+	
+	/** The instance. */
 	private static UserServiceImpl instance = new UserServiceImpl();
 
+	/**
+	 * Instantiates a new user service impl.
+	 */
 	private UserServiceImpl() {
 
 	}
 
+	/**
+	 * Gets the single instance of UserServiceImpl.
+	 *
+	 * @return single instance of UserServiceImpl
+	 */
 	public static UserServiceImpl getInstance() {
 		return instance;
 	}
 
-	@Override
-	public Optional<User> userLogin(String login, String password) throws ServiceException {
-		PasswordEncryptor encryptor = PasswordEncryptor.getInstance();
-		UserDaoImpl userDao = UserDaoImpl.getInstance();
-		try {
-			Optional<User> user = userDao.findByLogin(login);
-			if (user.isPresent()) {
-				String userPassword = user.get().getPassword();
-				return (encryptor.checkPassword(password, userPassword) ? user : Optional.empty());
-			} else {
-				return Optional.empty();
-			}
-		} catch (DaoException e) {
-			logger.error("Cannot find user with such login", e);
-			throw new ServiceException("Cannot find user with such login", e);
-		}
 
-	}
-
-	public boolean userSignUp(User user) throws ServiceException {
-		UserDaoImpl userDao = UserDaoImpl.getInstance();
-		try {
-			return (userDao.create(user) ? true : false);
-		} catch (DaoException e) {
-			logger.error("Something wrong: userSignIn - UserServiceImpl", e);
-			throw new ServiceException("Something wrong: userSignIn - UserServiceImpl", e);
-		}
-
-	}
-
+	/**
+	 * Find all applications.
+	 *
+	 * @return the list
+	 * @throws ServiceException the service exception
+	 */
 	public List<Application> findAllApplications() throws ServiceException {
 		List<Application> applications = new ArrayList<>();
 		ApplicationDaoImpl applicationDao = ApplicationDaoImpl.getInstance();
@@ -71,6 +60,13 @@ public class UserServiceImpl implements UserService {
 		return applications;
 	}
 
+	/**
+	 * Find all posted.
+	 *
+	 * @param status the status
+	 * @return the list
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public List<Application> findAllPosted(String status) throws ServiceException {
 		List<Application> applications = new ArrayList<>();
@@ -84,6 +80,13 @@ public class UserServiceImpl implements UserService {
 		return applications;
 	}
 
+	/**
+	 * Find organization by login.
+	 *
+	 * @param name the name
+	 * @return the applicant
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public Applicant findOrganizationByLogin(String name) throws ServiceException {
 		ApplicantDaoImpl applicantDao = ApplicantDaoImpl.getInstance();
@@ -97,6 +100,13 @@ public class UserServiceImpl implements UserService {
 		return applicant;
 	}
 
+	/**
+	 * Find all unposted by applicant.
+	 *
+	 * @param applicant the applicant
+	 * @return the list
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public List<Application> findAllUnpostedByApplicant(Applicant applicant) throws ServiceException {
 		ApplicationDaoImpl applicationDao = ApplicationDaoImpl.getInstance();
@@ -110,6 +120,13 @@ public class UserServiceImpl implements UserService {
 		return applications;
 	}
 
+	/**
+	 * Find all posted by applicant.
+	 *
+	 * @param applicant the applicant
+	 * @return the list
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public List<Application> findAllPostedByApplicant(Applicant applicant) throws ServiceException {
 		ApplicationDaoImpl applicationDao = ApplicationDaoImpl.getInstance();
@@ -123,6 +140,12 @@ public class UserServiceImpl implements UserService {
 		return applications;
 	}
 
+	/**
+	 * Update profile info.
+	 *
+	 * @param applicant the applicant
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public void updateProfileInfo(Applicant applicant) throws ServiceException {
 		ApplicantDaoImpl applicantDao = ApplicantDaoImpl.getInstance();

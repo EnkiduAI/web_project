@@ -19,18 +19,40 @@ import com.epam.web.model.service.AdminService;
 
 import static com.epam.web.controller.command.ParameterProvider.*;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AdminServiceImpl.
+ */
 public class AdminServiceImpl implements AdminService {
+	
+	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger();
+	
+	/** The instance. */
 	private static AdminServiceImpl instance = new AdminServiceImpl();
 
+	/**
+	 * Instantiates a new admin service impl.
+	 */
 	private AdminServiceImpl() {
 
 	}
 
+	/**
+	 * Gets the single instance of AdminServiceImpl.
+	 *
+	 * @return single instance of AdminServiceImpl
+	 */
 	public static AdminServiceImpl getInstance() {
 		return instance;
 	}
 
+	/**
+	 * Find unposted applications.
+	 *
+	 * @return the list
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public List<Application> findUnpostedApplications() throws ServiceException {
 		ApplicationDaoImpl applicationDao = ApplicationDaoImpl.getInstance();
@@ -44,6 +66,13 @@ public class AdminServiceImpl implements AdminService {
 		return applications;
 	}
 
+	/**
+	 * Find by id.
+	 *
+	 * @param id the id
+	 * @return the application
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public Application findById(int id) throws ServiceException {
 		ApplicationDaoImpl applicationDao = ApplicationDaoImpl.getInstance();
@@ -62,6 +91,12 @@ public class AdminServiceImpl implements AdminService {
 		}
 	}
 
+	/**
+	 * Update application.
+	 *
+	 * @param application the application
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public void updateApplication(Application application) throws ServiceException {
 		ApplicationDaoImpl applicationDao = ApplicationDaoImpl.getInstance();
@@ -75,6 +110,12 @@ public class AdminServiceImpl implements AdminService {
 		}
 	}
 
+	/**
+	 * Find posted status id.
+	 *
+	 * @return the int
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public int findPostedStatusId() throws ServiceException {
 		StatusDaoImpl statusDao = StatusDaoImpl.getInstance();
@@ -90,6 +131,13 @@ public class AdminServiceImpl implements AdminService {
 		return id;
 	}
 
+	/**
+	 * Change to posted.
+	 *
+	 * @param application the application
+	 * @return the application
+	 * @throws ServiceException the service exception
+	 */
 	public Application changeToPosted(Application application) throws ServiceException {
 		ApplicationDaoImpl applicationDao = ApplicationDaoImpl.getInstance();
 		if (application != null) {
@@ -109,6 +157,12 @@ public class AdminServiceImpl implements AdminService {
 
 	}
 
+	/**
+	 * Find verifying status id.
+	 *
+	 * @return the int
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public int findVerifyingStatusId() throws ServiceException {
 		StatusDaoImpl statusDao = StatusDaoImpl.getInstance();
@@ -124,6 +178,13 @@ public class AdminServiceImpl implements AdminService {
 		return id;
 	}
 
+	/**
+	 * Change to verifying.
+	 *
+	 * @param application the application
+	 * @return the application
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public Application changeToVerifying(Application application) throws ServiceException {
 		ApplicationDaoImpl applicationDao = ApplicationDaoImpl.getInstance();
@@ -143,6 +204,13 @@ public class AdminServiceImpl implements AdminService {
 		}
 	}
 
+	/**
+	 * Delete application.
+	 *
+	 * @param applicationId the application id
+	 * @return true, if successful
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public boolean deleteApplication(int applicationId) throws ServiceException {
 		ApplicationDaoImpl applicationDao = ApplicationDaoImpl.getInstance();
@@ -158,6 +226,12 @@ public class AdminServiceImpl implements AdminService {
 		}
 	}
 
+	/**
+	 * Find posted applications.
+	 *
+	 * @return the list
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public List<Application> findPostedApplications() throws ServiceException {
 		ApplicationDaoImpl applicationDao = ApplicationDaoImpl.getInstance();
@@ -172,6 +246,12 @@ public class AdminServiceImpl implements AdminService {
 
 	}
 
+	/**
+	 * Find all applicants.
+	 *
+	 * @return the list
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public List<Applicant> findAllApplicants() throws ServiceException {
 		ApplicantDaoImpl applicantDao = ApplicantDaoImpl.getInstance();
@@ -185,6 +265,14 @@ public class AdminServiceImpl implements AdminService {
 		return applicants;
 	}
 
+	/**
+	 * Find by organization name.
+	 *
+	 * @param applications the applications
+	 * @param name the name
+	 * @return the list
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public List<Application> findByOrganizationName(List<Application> applications, String name)
 			throws ServiceException {
@@ -206,6 +294,12 @@ public class AdminServiceImpl implements AdminService {
 		return newApplicationList;
 	}
 
+	/**
+	 * Find all types.
+	 *
+	 * @return the list
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public List<ApplicationType> findAllTypes() throws ServiceException {
 		ApplicationTypeDaoImpl typeDao = ApplicationTypeDaoImpl.getInstance();
@@ -220,6 +314,13 @@ public class AdminServiceImpl implements AdminService {
 		return types;
 	}
 
+	/**
+	 * Creates the applicant.
+	 *
+	 * @param applicant the applicant
+	 * @return true, if successful
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public boolean createApplicant(Applicant applicant) throws ServiceException {
 		ApplicantDaoImpl applicantDao = ApplicantDaoImpl.getInstance();
@@ -232,6 +333,13 @@ public class AdminServiceImpl implements AdminService {
 
 	}
 
+	/**
+	 * Delete applicant.
+	 *
+	 * @param id the id
+	 * @return true, if successful
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public boolean deleteApplicant(int id) throws ServiceException {
 		ApplicantDaoImpl applicantDao = ApplicantDaoImpl.getInstance();
@@ -244,6 +352,13 @@ public class AdminServiceImpl implements AdminService {
 
 	}
 
+	/**
+	 * Delete application by applicant id.
+	 *
+	 * @param id the id
+	 * @return true, if successful
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public boolean deleteApplicationByApplicantId(int id) throws ServiceException {
 		ApplicationDaoImpl applicationDao = ApplicationDaoImpl.getInstance();
@@ -256,6 +371,12 @@ public class AdminServiceImpl implements AdminService {
 
 	}
 
+	/**
+	 * Find all status.
+	 *
+	 * @return the list
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public List<Status> findAllStatus() throws ServiceException {
 		List<Status> status = new ArrayList<>();
@@ -269,6 +390,13 @@ public class AdminServiceImpl implements AdminService {
 		return status;
 	}
 
+	/**
+	 * Creates the application.
+	 *
+	 * @param application the application
+	 * @return true, if successful
+	 * @throws ServiceException the service exception
+	 */
 	@Override
 	public boolean createApplication(Application application) throws ServiceException {
 		ApplicationDaoImpl applicationDao = ApplicationDaoImpl.getInstance();

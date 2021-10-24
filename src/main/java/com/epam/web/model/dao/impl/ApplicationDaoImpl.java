@@ -575,7 +575,7 @@ WHERE st.status = "POSTED" and apls.organizationName = ?;
 	 * @throws SQLException the SQL exception
 	 */
 	private Application buildApplication(ResultSet resultSet) throws SQLException {
-		Application application = new Application.ApplicationBuilder()
+		return new Application.ApplicationBuilder()
 				.setApplicationId(resultSet.getInt(APPLICATION_ID)).setStatusId(resultSet.getInt(FK_STATUS_ID))
 				.setApplicantId(resultSet.getInt(FK_APPLICANT_ID)).setTypeId(resultSet.getInt(FK_TYPE_ID))
 				.setPhoto(resultSet.getString(PHOTO)).setName(resultSet.getString(NAME))
@@ -583,7 +583,7 @@ WHERE st.status = "POSTED" and apls.organizationName = ?;
 				.setWeight(resultSet.getInt(WEIGHT)).setHeight(resultSet.getInt(HEIGHT))
 				.setDescription(resultSet.getString(DESCRIPTION)).setReward(resultSet.getInt(REWARD))
 				.setExpirationDate(resultSet.getDate(EXPIRATION_DATE)).build();
-		return application;
+		
 	}
 
 	

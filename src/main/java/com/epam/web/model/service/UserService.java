@@ -9,9 +9,6 @@ import com.epam.web.model.entity.Application;
 import com.epam.web.model.entity.User;
 
 public interface UserService {
-	Optional<User> userLogin(String login, String password) throws ServiceException;
-
-	boolean userSignUp(User user) throws ServiceException;
 
 	List<Application> findAllApplications() throws ServiceException;
 

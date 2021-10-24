@@ -66,6 +66,7 @@ public static final String TYPE_SELECTED = "selectedType";
 //miscellaneous
 public static final String ORGANIZATION_FILTER = "organizationSelect";
 public static final String ORGANIZATION_SELECTED = "selectedName";
+public static final String UPLOAD_PATH = "D:/eclipse_workplace/epam-project/src/main/webapp/image/wanted/";
 private ParameterProvider() {
 	
 }

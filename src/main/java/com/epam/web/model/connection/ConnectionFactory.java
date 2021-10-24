@@ -8,13 +8,17 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ConnectionFactory {
+class ConnectionFactory {
 	private static final Properties properties = new Properties();
 	private static final Logger logger = LogManager.getLogger();
 	private static String URL ="";
 	private static final String DB_URL = "url";
 	private static final String RESOURCE = "database.properties";
 	private static final String DB_DRIVER = "driver";
+	
+	private ConnectionFactory() {
+		
+	}
 
 	static {
 		String driverName = "";

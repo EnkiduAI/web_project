@@ -32,10 +32,12 @@ public class ConnectionPool {
 			ProxyConnection proxyConnection = new ProxyConnection(connection);
 			freeConnections.add(proxyConnection);
 			}catch(SQLException e) {
-				logger.error("Problem on create connection");
+				logger.fatal("Problem on create connection");
+				throw new RuntimeException(e);
 			}
 		}
 		if(freeConnections.isEmpty()) {
+			logger.fatal("Pool of connections is empty");
 			throw new IllegalArgumentException();
 		}
 	}
@@ -78,6 +80,7 @@ public class ConnectionPool {
 				freeConnections.put((ProxyConnection)connection);
 			} catch (InterruptedException e) {
 				logger.error("interrupted exception at releaseConnection;");
+				Thread.currentThread().interrupt();
 			}
 			return true;
 		}else {
@@ -92,7 +95,7 @@ public class ConnectionPool {
 			freeConnections.take().close();
 			}catch(InterruptedException e) {
 				logger.error("interrupted exception in method killPool");
-				throw new SQLException(e);
+				Thread.currentThread().interrupt();
 			}
 		}
 	}

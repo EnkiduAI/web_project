@@ -12,7 +12,7 @@ public class GoToSettingNewImageCommand implements Command {
 	@Override
 	public String execute(HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		if(session.getAttribute(ROLE).equals(ADMIN_ROLE) && session.getAttribute(ROLE).equals(USER_ROLE)) {
+		if(session.getAttribute(ROLE).equals(ADMIN_ROLE) || session.getAttribute(ROLE).equals(USER_ROLE)) {
 			return IMAGE_EDIT;
 		}else {
 			return LOGIN_PAGE;

@@ -17,41 +17,79 @@ import com.epam.web.model.connection.ConnectionPool;
 import com.epam.web.model.dao.ApplicationTypeDao;
 import com.epam.web.model.entity.ApplicationType;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ApplicationTypeDaoImpl.
+ */
 public class ApplicationTypeDaoImpl implements ApplicationTypeDao{
+	
+	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger();
+	
+	/** The instance. */
 	private static ApplicationTypeDaoImpl instance = new ApplicationTypeDaoImpl();
+	
+	/** The connection pool. */
 	private ConnectionPool connectionPool = ConnectionPool.getInstance();
 	
+	/**
+	 * Instantiates a new application type dao impl.
+	 */
 	private ApplicationTypeDaoImpl() {
 		
 	}
 	
+	/**
+	 * Gets the single instance of ApplicationTypeDaoImpl.
+	 *
+	 * @return single instance of ApplicationTypeDaoImpl
+	 */
 	public static ApplicationTypeDaoImpl getInstance() {
 		return instance;
 	}
+	
+	/** The Constant SQL_SELECT_BY_TYPE. */
 	private static final String SQL_SELECT_BY_TYPE = """
 			select typeId, type
 			from application_types
 			where type = ?
 			""";
+	
+	/** The Constant SQL_SELECT_ALL. */
 	private static final String SQL_SELECT_ALL = """ 
 			select typeId, type 
 			from application_types
 			""";
+	
+	/** The Constant SQL_DELETE_BY_ID. */
 	private static final String SQL_DELETE_BY_ID = """ 
 			delete from application_types where typeId = ?
 			""";
+	
+	/** The Constant SQL_FIND_BY_ID. */
 	private static final String SQL_FIND_BY_ID = """
 			select typeId, type from application_types
 			where typeId = ?
 			""";
+	
+	/** The Constant SQL_INSERT_TYPE. */
 	private static final String SQL_INSERT_TYPE = """
 			insert into application_types(typeId, type) values(NULL,?)
 			""";
+	
+	/** The Constant SQL_UPDATE_TYPE. */
 	private static final String SQL_UPDATE_TYPE = """
 			update application_types set type = ?
 			where typeId = ?
 			""";
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param id the id
+	 * @return the application type
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public ApplicationType findById(Integer id) throws DaoException {
 		ApplicationType type = new ApplicationType();
@@ -69,6 +107,13 @@ public class ApplicationTypeDaoImpl implements ApplicationTypeDao{
 		return type;
 	}
 
+	/**
+	 * Delete type by id.
+	 *
+	 * @param id the id
+	 * @return true, if successful
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public boolean delete(Integer id) throws DaoException {
 		int result = 0;
@@ -83,12 +128,19 @@ public class ApplicationTypeDaoImpl implements ApplicationTypeDao{
 		return result>0;
 	}
 
+	/**
+	 * Delete type.
+	 *
+	 * @param t the t
+	 * @return true, if successful
+	 * @throws DaoException the dao exception
+	 */
 	@Override
-	public boolean delete(ApplicationType t) throws DaoException {
+	public boolean delete(ApplicationType type) throws DaoException {
 		int result = 0;
 		try (Connection connection = connectionPool.getConnection();
 				PreparedStatement statement = connection.prepareStatement(SQL_DELETE_BY_ID)){
-			statement.setInt(1, t.getId());
+			statement.setInt(1, type.getId());
 			result = statement.executeUpdate();
 		}catch(SQLException e) {
 			logger.error("Problem at delete(ENTITY) method at ApplicationTypeDaoImpl", e);
@@ -97,12 +149,19 @@ public class ApplicationTypeDaoImpl implements ApplicationTypeDao{
 		return result>0;
 	}
 
+	/**
+	 * Creates the type.
+	 *
+	 * @param t the t
+	 * @return true, if successful
+	 * @throws DaoException the dao exception
+	 */
 	@Override
-	public boolean create(ApplicationType t) throws DaoException {
+	public boolean create(ApplicationType type) throws DaoException {
 		int result = 0;
 		try (Connection connection = connectionPool.getConnection();
 				PreparedStatement statement = connection.prepareStatement(SQL_INSERT_TYPE)){
-			statement.setString(1, t.getType());
+			statement.setString(1, type.getType());
 			result = statement.executeUpdate();
 		}catch(SQLException e) {
 			logger.error("Problem at create method at ApplicationTypeDaoImpl", e);
@@ -111,13 +170,18 @@ public class ApplicationTypeDaoImpl implements ApplicationTypeDao{
 		return result>0;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param t the t
+	 * @throws DaoException the dao exception
+	 */
 	@Override
-	public void update(ApplicationType t) throws DaoException {
-		ApplicationType type = new ApplicationType();
-		type = findById(t.getId());
+	public void update(ApplicationType type) throws DaoException {
+		type = findById(type.getId());
 		try(Connection connection = connectionPool.getConnection();
 				PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_TYPE)) {	
-			statement.setString(1, t.getType());
+			statement.setString(1, type.getType());
 			statement.executeUpdate();
 		}catch(SQLException e) {
 			logger.error("Problem at update method at ApplicationTypeDaoImpl", e);
@@ -126,6 +190,12 @@ public class ApplicationTypeDaoImpl implements ApplicationTypeDao{
 		
 	}
 
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public List<ApplicationType> findAll() throws DaoException {
 		List<ApplicationType> types = new ArrayList<>();
@@ -144,6 +214,13 @@ public class ApplicationTypeDaoImpl implements ApplicationTypeDao{
 		return types;
 	}
 
+	/**
+	 * Find by type.
+	 *
+	 * @param type the type
+	 * @return the list
+	 * @throws DaoException the dao exception
+	 */
 	@Override
 	public List<ApplicationType> findByType(String type) throws DaoException {
 		List<ApplicationType> typesToFind = new ArrayList<>();
@@ -162,12 +239,20 @@ public class ApplicationTypeDaoImpl implements ApplicationTypeDao{
 		}
 		return typesToFind;
 	}
+
+/**
+ * Builds the type.
+ *
+ * @param resultSet the result set
+ * @return the application type
+ * @throws SQLException the SQL exception
+ */
 private ApplicationType buildType(ResultSet resultSet) throws SQLException{
-	ApplicationType type = new ApplicationType.TypeBuilder()
+	return new ApplicationType.TypeBuilder()
 			.setId(resultSet.getInt(TYPE_ID))
 			.setType(resultSet.getString(TYPE))
 			.build();
-	return type;
+	
 }
 }
 	

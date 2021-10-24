@@ -11,11 +11,15 @@ public class GoToCreateApplicationCommand implements Command{
 	@Override
 	public String execute(HttpServletRequest request) {
 		HttpSession session = request.getSession();
+		if(session.getAttribute(ROLE) != null) {
 		if(session.getAttribute(ROLE).equals(ADMIN_ROLE) || session.getAttribute(ROLE).equals(USER_ROLE)) {
 		Application application = new Application();
 		session.setAttribute(CURRENT_APPLICATION, application);
 		session.setAttribute(CURRENT_PAGE, APPLICATION_CREATE);
 		return APPLICATION_CREATE;
+		}else {
+			return LOGIN_PAGE;
+		}
 		}else {
 			return LOGIN_PAGE;
 		}
